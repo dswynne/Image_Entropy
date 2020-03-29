@@ -1,0 +1,29 @@
+This project was written in Visual Studio 2019 Community edition
+
+libraries
+opencv: 
+	install: Using version 4.2.0, follow tutorial below if now already setup 
+	https://medium.com/@subwaymatch/adding-opencv-4-2-0-to-visual-studio-2019-project-in-windows-using-pre-built-binaries-93a851ed6141
+
+MinGW: 
+	install: Using latest version, follow tutorial below
+	http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/
+
+GMP: (this doesn't seem to work on Windows, need to use MPIR and MPFR. I am currently working on getting those set up. Tutorials below)
+	install: Using version 6.2.0, tutorial below requires additional software
+		1. Get download from this https://gmplib.org/
+		2. WinRAR cannot open .lz files. Need 7zip and Lzip7z plugin (links below
+			7zip download: https://www.7-zip.org/download.html
+			Lzip7z download (found in VictorVG comment at the bottom of the page):
+			https://sourceforge.net/p/sevenzip/discussion/45798/thread/9e77409b/#2946
+		3. Extract gmp-6.2.0.tar.lz and then gmp-6.2.0.tar to your C: drive
+		4. Go to C:\MinGW\msys\1.0\
+		5. Launch  msys.bat
+		6. navigate to gmp-6.2.0 folder using the shell terminal
+		7. Run these commands (can also follow the instructions inside the INSTALL file of the gmp-6.2.0 directory)
+			./configure
+			make
+			make check
+
+MIPR/MIFR: 
+			  
