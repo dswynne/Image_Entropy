@@ -8,16 +8,127 @@
 #include <string> 
 #include <vector>
 #include <stdio.h>
-#include <mpir.h>
+//#include <mpir.h>
 
 
 using namespace cv;
 using namespace std;
 
+struct retVals {
+    std::vector <std::string> p, q;
+};
+
+/* Finds arrays of strings of p&q. 
+   Each string is 512 long.
+   This implementation weaves through the 2D matrix row by row ergo the name snake
+*/
+retVals mat_snake(int temp[][256], int rows, int cols) {
+    
+    // converting 2D to 1D for easier manipulation
+    int i, j;
+    const int len = rows * cols;
+    std::vector<int> allpix(len);
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            allpix[i * cols + j] = temp[i][j];
+        }
+    }
+
+    // finding arrays of p&q's
+    retVals retVals;
+    string pixel;
+    int k = 0, flag = 0, ovr;
+    i = 0;
+    while (i < allpix.size()) { // (NEED TO) Throw away bit strings that are not 512 long at the end
+        // checking if p[k] needs to be initialized or not
+        if (flag == 1) {
+            retVals.p.push_back("");
+            if (ovr - 1 == 0) { // 1 extra value
+                retVals.p[k].insert(std::end(retVals.p[k]), pixel[pixel.size() - 1]);
+            }
+            else { // 2 extra values
+                retVals.p[k].insert(std::end(retVals.p[k]), std::end(pixel) - ovr + 1, std::end(pixel));
+            }
+            flag = 0;
+        }
+        else if (flag == 0) {
+            retVals.p.push_back(to_string(allpix[i]));
+            i++;
+        }
+        // storing a p in a bitstring
+        while (retVals.p[k].size() < 512) {
+            // preventing indexing outside of allpix
+            if (i > allpix.size() - 1) {
+                break;
+            }
+            // converting current pixel to string
+            pixel = to_string(allpix[i]);
+            // if the current pixel will make p[k] longer than 512 take the
+            // overage and put it into q[k]
+            if ((retVals.p[k].size() + pixel.size()) > 512) {
+                ovr = (retVals.p[k].size() + pixel.size()) - 512;
+                retVals.p[k].insert(std::end(retVals.p[k]), std::begin(pixel), std::end(pixel) - ovr);
+                flag = 1;
+                i++;
+            }
+            else {
+                retVals.p[k].insert(std::end(retVals.p[k]), std::begin(pixel), std::end(pixel));
+                i++;
+            }
+        }
+
+        // preventing indexing outside of allpix
+        if (i > allpix.size() - 1) {
+            break;
+        }
+
+        // checking if q[k] needs to be initialized or not
+        if (flag == 1) {
+            retVals.q.push_back("");
+            if (ovr - 1 == 0) { // 1 extra value
+                retVals.q[k].insert(std::end(retVals.q[k]), pixel[pixel.size() - 1]);
+            }
+            else { // 2 extra values
+                retVals.q[k].insert(std::end(retVals.q[k]), std::end(pixel) - ovr + 1, std::end(pixel));
+            }
+            flag = 0;
+        }
+        else if (flag == 0) {
+            retVals.q.push_back(to_string(allpix[i]));
+            i++;
+        }
+        // storing a q in a bitstring
+        while (retVals.q[k].size() < 512) {
+            // preventing indexing outside of allpix
+            if (i > allpix.size() - 1) {
+                break;
+            }
+            // converting current pixel to string
+            pixel = to_string(allpix[i]);
+            // if the current pixel will make q[k] longer than 512 take the
+            // overage and put it into the next p[k]
+            if ((retVals.q[k].size() + pixel.size()) > 512) {
+                ovr = (retVals.q[k].size() + pixel.size()) - 512;
+                retVals.q[k].insert(std::end(retVals.q[k]), std::begin(pixel), std::end(pixel) - ovr);
+                flag = 1;
+                i++;
+            }
+            else {
+                retVals.q[k].insert(std::end(retVals.q[k]), std::begin(pixel), std::end(pixel));
+                i++;
+            }
+        }
+        k++;
+    }
+    // Throwing away bit strings that aren't 512 long
+    retVals.p.erase(retVals.p.begin() + k-1);
+    retVals.q.erase(retVals.q.begin() + k-1);
+    return retVals;//check this
+}
+
 int main()
 {
 	Mat I = imread("Lena.bmp");
-    //Scalar intensity = 0;
     unsigned char intensity;
     int rows = I.rows;
     int cols = I.cols;
@@ -30,92 +141,10 @@ int main()
             temp[i][j] = int(intensity);
         }
     }
-
-    // converting 2D to 1D for easier manipulation
-    const int len = rows * cols;
-    std::vector<int> allpix(len);
-    for (i = 0; i < rows; i++){
-        for (j = 0; j < cols; j++){
-            allpix[i * cols + j] = temp[i][j];
-        }
-    }
-    /* finding arrays of p&q's
-    current implementation is to alternate between storing p & q */
-    std::vector <std::string> p, q;
-    string pixel;
-    int k = 0, flag = 0, ovr;
-    i = 0;
     
-    while (i < allpix.size() + 1) { // (NEED TO) Throw away bit strings that are not 512 long at the end
-        // checking if p[k] needs to be initialized or not
-        if (flag == 1) {
-            flag = 0;
-        }
-        else if(flag == 0) {
-            p.push_back(to_string(allpix[i])); // CORRECT LINE I THINK
-            //p[k] = std::to_string(allpix[i]);
-            i++;
-        }
-        // storing a p in a bitstring
-        while (p[k].size() < 512) {
-            // preventing indexing outside of allpix
-            if (i > allpix.size()) {
-                break;
-            }
-            // converting current pixel to string
-            pixel = to_string(allpix[i]);
-            // if the current pixel will make p[k] longer than 512 take the
-            // overage and put it into q[k]
-            if ((p[k].size() + pixel.size()) > 512) {
-                ovr = (p[k].size() + pixel.size()) - 512;
-                p[k].insert(std::end(p[k]), std::begin(pixel), std::end(pixel)-ovr);
-                q[k].insert(std::end(q[k]), std::end(pixel)-ovr+1, std::end(pixel));
-                flag = 1;
-                i++;
-            }
-            else {
-                p[k].insert(std::end(p[k]), std::begin(pixel), std::end(pixel));
-                i++;
-            }
-        }
-
-        // preventing indexing outside of allpix
-        if (i > allpix.size()) {
-            break;
-        }
-
-        // checking if q[k] needs to be initialized or not
-        if (flag == 1) {
-            flag = 0;
-        }
-        else if (flag == 0) {
-            q.push_back(to_string(allpix[i])); // CORRECT LINE I THINK
-            //q[k] = std::to_string(allpix[i]);
-            i++;
-        }
-        // storing a q in a bitstring
-        while (q[k].size() < 512) {
-            // preventing indexing outside of allpix
-            if (i > allpix.size()) {
-                break;
-            }
-            // converting current pixel to string
-            pixel = to_string(allpix[i]);
-            // if the current pixel will make q[k] longer than 512 take the
-            // overage and put it into the next p[k]
-            if ((q[k].size() + pixel.size()) > 512) {
-                ovr = (q[k].size() + pixel.size()) - 512;
-                q[k].insert(std::end(q[k]), std::begin(pixel), std::end(pixel) - ovr);
-                p[k+1].insert(std::end(p[k+1]), std::end(pixel) - ovr + 1, std::end(pixel));
-                flag = 1;
-                i++;
-            }
-            else {
-                q[k].insert(std::end(q[k]), std::begin(pixel), std::end(pixel));
-                i++;
-            }
-        }
-    }
+    // finding arrays of p&q's as strings
+    // (TESTING) This is one implementation of breaking up the 2D matrix the goal will be to test at least two other implementations. 
+    retVals retVals = mat_snake(temp, rows, cols);
     
     // This block of code was written before I knew we needed to use MIPR not GMP to work with long ints.
     // I am leaving the logic for now on the assumption that once I get MIPR setup it will use similair logic.
