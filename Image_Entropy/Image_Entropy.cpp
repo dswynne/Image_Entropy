@@ -8,7 +8,7 @@
 #include <string> 
 #include <vector>
 #include <stdio.h>
-//#include <gmp.h>
+#include <mpir.h>
 
 
 using namespace cv;
@@ -17,16 +17,17 @@ using namespace std;
 int main()
 {
 	Mat I = imread("Lena.bmp");
-    Scalar intensity = 0;
+    //Scalar intensity = 0;
+    unsigned char intensity;
     int rows = I.rows;
     int cols = I.cols;
     int temp[256][256];
     int i,j;
     // storing intensity values
     for (i = 0; i < rows; i++) {
-        for (j = 0; i < cols; i++){
+        for (j = 0; j < cols; j++){
             intensity = I.at<uchar>(i, j);
-            temp[i][j] = intensity[0];
+            temp[i][j] = int(intensity);
         }
     }
 
@@ -38,22 +39,21 @@ int main()
             allpix[i * cols + j] = temp[i][j];
         }
     }
-
     /* finding arrays of p&q's
     current implementation is to alternate between storing p & q */
-    std::vector <std::string> p, q, pixel;
-    int k = 1, flag = 0, ovr;
-    i = 1;
-    p.push_back("");
-    q.push_back("");
-    pixel.push_back("");
+    std::vector <std::string> p, q;
+    string pixel;
+    int k = 0, flag = 0, ovr;
+    i = 0;
+    
     while (i < allpix.size() + 1) { // (NEED TO) Throw away bit strings that are not 512 long at the end
         // checking if p[k] needs to be initialized or not
         if (flag == 1) {
             flag = 0;
         }
         else if(flag == 0) {
-            p[k] = std::to_string(allpix[i]);
+            p.push_back(to_string(allpix[i])); // CORRECT LINE I THINK
+            //p[k] = std::to_string(allpix[i]);
             i++;
         }
         // storing a p in a bitstring
@@ -63,7 +63,7 @@ int main()
                 break;
             }
             // converting current pixel to string
-            pixel.push_back(std::to_string(allpix[i]));
+            pixel = to_string(allpix[i]);
             // if the current pixel will make p[k] longer than 512 take the
             // overage and put it into q[k]
             if ((p[k].size() + pixel.size()) > 512) {
@@ -89,7 +89,8 @@ int main()
             flag = 0;
         }
         else if (flag == 0) {
-            q[k] = std::to_string(allpix[i]);
+            q.push_back(to_string(allpix[i])); // CORRECT LINE I THINK
+            //q[k] = std::to_string(allpix[i]);
             i++;
         }
         // storing a q in a bitstring
@@ -99,7 +100,7 @@ int main()
                 break;
             }
             // converting current pixel to string
-            pixel.push_back(std::to_string(allpix[i]));
+            pixel = to_string(allpix[i]);
             // if the current pixel will make q[k] longer than 512 take the
             // overage and put it into the next p[k]
             if ((q[k].size() + pixel.size()) > 512) {
@@ -121,17 +122,17 @@ int main()
     // Since it is essentially a port of GMP to windows.
 
     /*// converting bitstrings back to ints
-    const int pSZ = p.size();
-    const int qSZ = q.size();
-    mpz_t pInt[pSZ];
-    mpz_t qInt[qSZ];
-    mpz_init(pInt);
-    mpz_init(qInt);
+    unsigned long pSZ = p.size();
+    unsigned long qSZ = q.size();
+    mpz_t pInt;
+    mpz_t qInt;
+    mpz_init (pInt,pSZ);
+    mpz_init (qInt,qSZ);
     for (i = 0; i < pSZ + 1; i++) {
-        mpz_set(pInt[i], stoi(p[i]);
+        mpz_set_str (pInt[i], stoi(p[i]);
     }
     for (i = 0; i < qSZ + 1; i++) {
-        mpz_set(qInt[i], stoi(q[i]);
+        mpz_set_str (qInt[i], stoi(q[i]);
     }
 
     // averaging out the p&q's (will break this into a function later)
