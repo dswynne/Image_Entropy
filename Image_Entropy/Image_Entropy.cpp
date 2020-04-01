@@ -8,11 +8,12 @@
 #include <string> 
 #include <vector>
 #include <stdio.h>
-//#include <mpir.h>
-
+#include <gmp.h>
+#include <mpir.h>
 
 using namespace cv;
 using namespace std;
+//using mpfr::mpreal;
 
 struct retVals {
     std::vector <std::string> p, q;
@@ -146,44 +147,50 @@ int main()
     // (TESTING) This is one implementation of breaking up the 2D matrix the goal will be to test at least two other implementations. 
     retVals retVals = mat_snake(temp, rows, cols);
     
-    // This block of code was written before I knew we needed to use MIPR not GMP to work with long ints.
+    /*// This block of code was written before I knew we needed to use MIPR not GMP to work with long ints.
     // I am leaving the logic for now on the assumption that once I get MIPR setup it will use similair logic.
     // Since it is essentially a port of GMP to windows.
 
-    /*// converting bitstrings back to ints
-    unsigned long pSZ = p.size();
-    unsigned long qSZ = q.size();
+    // converting bitstrings back to ints
+    unsigned long pSZ = retVals.p.size();
+    unsigned long qSZ = retVals.q.size();
     mpz_t pInt;
     mpz_t qInt;
-    mpz_init (pInt,pSZ);
-    mpz_init (qInt,qSZ);
+    __gmpz_init2(pInt,pSZ);
+    __gmpz_init2(qInt,qSZ);
+    //std::vector<char*> str(retVals.p.size());
+    std::vector<char*> cstringsP, cstringsQ;
+    cstringsP.reserve(retVals.p.size());
     for (i = 0; i < pSZ + 1; i++) {
-        mpz_set_str (pInt[i], stoi(p[i]);
+        cstringsP.push_back(const_cast<char*>(retVals.p[i].c_str()));
+        __gmpz_set_str(pInt, cstringsP[i], 10);
     }
+    cstringsQ.reserve(retVals.q.size());
     for (i = 0; i < qSZ + 1; i++) {
-        mpz_set_str (qInt[i], stoi(q[i]);
+        cstringsQ.push_back(const_cast<char*>(retVals.q[i].c_str()));
+        __gmpz_set_str(qInt, cstringsQ[i], 10);
     }
 
     // averaging out the p&q's (will break this into a function later)
     mpz_t tot;
-    mpz_init(tot);
+    __gmpz_init(tot);
     // for p
-    mpz_set(tot,pInt[0]);
+    __gmpz_set(tot,pInt[0]);
     for (i = 1; i < pSZ + 1; i++) {
-        mpz_add(tot, tot, pInt[i]);
+        __gmpz_add(tot, tot, pInt[i]);
     }
-    mpz_t pFinal,qou;
-    mpz_init(pFinal);
-    mpz_init(quo);
-    mpz_set(pFinal, mpz_cdiv_q(quo,tot,pSZ));
+    mpz_t pFinal,quo;
+    __gmpz_init(pFinal);
+    __gmpz_init(quo);
+    __gmpz_set(pFinal, __gmpz_cdiv_q(quo,tot,pSZ));
     // for q
-    mpz_set(tot, qInt[0]);
+    __gmpz_set(tot, qInt[0]);
     for (i = 1; i < qSZ + 1; i++) {
-        mpz_add(tot, tot, qInt[i]);
+        __gmpz_add(tot, tot, qInt[i]);
     }
     mpz_t qFinal;
-    mpz_init(qFinal);
-    mpz_set(qFinal, mpz_cdiv_q(quo, tot, qSZ));*/
+    __gmpz_init(qFinal);
+    __gmpz_set(qFinal, __gmpz_cdiv_q(quo, tot, qSZ));*/
 
 
 	return 0;
