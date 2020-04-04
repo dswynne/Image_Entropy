@@ -10,3 +10,4 @@ struct bitstrings {
 bitstrings gen_bitstrings(std::vector<int> allpix);
 //mat_division.cpp
 std::vector<int> mat_snake(int** intensity_mat, int rows, int cols);
+//tools.cpp
