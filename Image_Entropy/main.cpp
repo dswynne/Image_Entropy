@@ -19,6 +19,7 @@
 #include <mpirxx.h>
 /* Developer Created Libraries*/
 #include "main.h"
+#include "tools.h"
 
 using namespace cv;
 using namespace std;
@@ -57,6 +58,10 @@ int main() {
     int rows = I.rows;
     int cols = I.cols;
     
+    // For testing filter function. Won't modify main.cpp any more until I finish this
+    //Implemented in filter.cpp
+    Mat filteredImage = applyFilter(I);
+
     // Storing intensity values of image
     int** intensity_mat = find_intensity(I, rows, cols);
         

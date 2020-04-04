@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="filter.cpp" />
     <ClCompile Include="gen_bitstrings.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mat_division.cpp" />

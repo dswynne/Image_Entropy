@@ -51,4 +51,9 @@ void printMatType(cv::Mat input) {
 	cout << "\n\n" << imageInfo.c_str() << "\n\n";
 }
 
+
+void printMatArray(cv::Mat M) {
+	cout << "M = " << endl << " " << M << endl << endl;
+}
+
 #endif // !Tools
