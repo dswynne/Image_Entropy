@@ -69,7 +69,7 @@ cv::Point getPQIndices(int numPStrings, int numQStrings)
 	//x = p index, y = q index
 	cv::Point indices;
 
-	int N = 163;
+	int N = numPStrings;
 	int pIndex = 0;
 	int qIndex = 0;
 
