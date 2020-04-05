@@ -15,14 +15,14 @@
 
 using namespace std;
 
-bitstrings gen_bitstrings(vector<int> allpix) {
+bitstrings gen_bitstrings(cv::Mat allpix) {
     // intializing values
     bitstrings bitstrings;
     string pixel;
     int i = 0, k = 0, flag = 0, ovr;
 
     // finding arrays of p&q's
-    while (i < allpix.size()) {
+    while (i < allpix.cols) {
         // checking if p[k] needs to be initialized or not
         if (flag == 1) {
             bitstrings.p.push_back("");
@@ -35,17 +35,17 @@ bitstrings gen_bitstrings(vector<int> allpix) {
             flag = 0;
         }
         else if (flag == 0) {
-            bitstrings.p.push_back(to_string(allpix[i]));
+            bitstrings.p.push_back(to_string(allpix.at<int>(1,i)));
             i++;
         }
         // storing a p in a bitstring
         while (bitstrings.p[k].size() < 512) {
             // preventing indexing outside of allpix
-            if (i > allpix.size() - 1) {
+            if (i > allpix.cols - 1) {
                 break;
             }
             // converting current pixel to string
-            pixel = to_string(allpix[i]);
+            pixel = to_string(allpix.at<int>(1, i));
             // if the current pixel will make p[k] longer than 512 take the
             // overage and put it into q[k]
             if ((bitstrings.p[k].size() + pixel.size()) > 512) {
@@ -61,7 +61,7 @@ bitstrings gen_bitstrings(vector<int> allpix) {
         }
 
         // preventing indexing outside of allpix
-        if (i > allpix.size() - 1) {
+        if (i > allpix.cols - 1) {
             break;
         }
 
@@ -77,17 +77,17 @@ bitstrings gen_bitstrings(vector<int> allpix) {
             flag = 0;
         }
         else if (flag == 0) {
-            bitstrings.q.push_back(to_string(allpix[i]));
+            bitstrings.q.push_back(to_string(allpix.at<int>(1, i)));
             i++;
         }
         // storing a q in a bitstring
         while (bitstrings.q[k].size() < 512) {
             // preventing indexing outside of allpix
-            if (i > allpix.size() - 1) {
+            if (i > allpix.cols - 1) {
                 break;
             }
             // converting current pixel to string
-            pixel = to_string(allpix[i]);
+            pixel = to_string(allpix.at<int>(1, i));
             // if the current pixel will make q[k] longer than 512 take the
             // overage and put it into the next p[k]
             if ((bitstrings.q[k].size() + pixel.size()) > 512) {

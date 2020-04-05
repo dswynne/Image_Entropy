@@ -4,7 +4,6 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 /* External Libraries: */
 // OpenCV
 #include <opencv2/core/core.hpp>

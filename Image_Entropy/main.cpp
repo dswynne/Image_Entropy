@@ -27,23 +27,16 @@ using namespace std;
 
 /* Taking the intensity values of each pixel and storing it in a 2D matrix
 */
-int** find_intensity(Mat I, int rows, int cols) {
+Mat find_intensity(Mat input, int rows, int cols) {
     // intializing values
-    unsigned char intensity;
-    int** intensity_mat = 0;
-    intensity_mat = new int* [rows];
-    int i, j;
 
-    // storing intensity values
-    for (i = 0; i < rows; i++) {
-        intensity_mat[i] = new int[cols];
-        for (j = 0; j < cols; j++) {
-            intensity = I.at<uchar>(i, j);
-            intensity_mat[i][j] = int(intensity);
-        }
-    }
+
+   /* 
+    if (input.channels() > 1) {
+        cvtColor(input, input, COLOR_BGR2GRAY);
+    }*/
+    return input;
     
-    return intensity_mat;
 }
 
 
@@ -63,11 +56,20 @@ int main() {
     Mat filteredImage = applyFilter(I);
 
     // Storing intensity values of image
-    int** intensity_mat = find_intensity(I, rows, cols);
+    Mat intensity_mat = find_intensity(I, rows, cols);
+
+    //Start stopwatch to time length of mat_snake execution
+    auto start = chrono::high_resolution_clock::now();
         
     // Divding up the 2D intensity matrix and storing it in a 1D intensity vector
     // (TESTING) This is one implementation of breaking up the 2D matrix the goal will be to test at least two other implementations. 
-    vector<int> allpix = mat_snake(intensity_mat, rows, cols);
+    Mat allpix = mat_snake(intensity_mat, rows, cols);
+
+    //Stop stopwatch and display elapsed time for mat_snake execution
+    //auto finish = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> elapsed = finish - start;
+    //std::cout << "Mat_snake() Execution Time: " << elapsed.count() << " s\n";
+
     
     // Generating N p&q bitstrings from the 1D intensity vector
     bitstrings bitstrings = gen_bitstrings(allpix);

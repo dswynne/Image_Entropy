@@ -14,17 +14,7 @@
 using namespace std;
 
 /* This implementation weaves through the 2D matrix row by row ergo the name snake. */
-vector<int> mat_snake(int** intensity_mat, int rows, int cols) {
-    // intializing values
-    int i, j;
-    const int len = rows * cols;
-    std::vector<int> allpix(len);
-
-    // storing intensity values in a 1D vector
-    for (i = 0; i < rows; i++) {
-        for (j = 0; j < cols; j++) {
-            allpix[i * cols + j] = intensity_mat[i][j];
-        }
-    }
-    return allpix;
+cv::Mat mat_snake(cv::Mat intensity_mat, int rows, int cols) {
+    cv::Mat oneDMat = intensity_mat.reshape(0, 1);
+    return oneDMat;
 }

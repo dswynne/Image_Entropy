@@ -12,8 +12,8 @@ struct bitstrings {
 };
 
 //gen_bitstrings.cpp 
-bitstrings gen_bitstrings(std::vector<int> allpix);
+bitstrings gen_bitstrings(cv::Mat allpix);
 //mat_division.cpp
-std::vector<int> mat_snake(int** intensity_mat, int rows, int cols);
+cv::Mat mat_snake(cv::Mat intensity_mat, int rows, int cols);
 //filter.cpp
 cv::Mat applyFilter(cv::Mat input);
