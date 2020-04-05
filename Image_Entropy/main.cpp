@@ -25,7 +25,7 @@ using namespace std;
 
 
 /* Taking the intensity values of each pixel and storing it in a 2D matrix
-*/
+
 int** find_intensity(Mat I, int rows, int cols) {
     // intializing values
     unsigned char intensity;
@@ -43,7 +43,7 @@ int** find_intensity(Mat I, int rows, int cols) {
     }
     
     return intensity_mat;
-}
+}*/
 
 
 /* (TODO):
@@ -62,12 +62,12 @@ int main() {
     //Implemented in filter.cpp
     Mat filteredImage = applyFilter(I);
 
-    // Storing intensity values of image
-    int** intensity_mat = find_intensity(I, rows, cols);
-        
-    // Divding up the 2D intensity matrix and storing it in a 1D intensity vector
+    /*// Storing intensity values of image
+    Mat intensity_mat = find_intensity(I, rows, cols);*/
+    
+    // Divding up the 2D intensity Mat and storing it in a 1D intensity vector
     // (TESTING) This is one implementation of breaking up the 2D matrix the goal will be to test at least two other implementations. 
-    vector<int> allpix = mat_snake(intensity_mat, rows, cols);
+    vector<int> allpix = mat_snake(filteredImage, rows, cols);
     //vector<int> allpix = mat_cross(intensity_mat, rows, cols);
     
     // Generating N p&q bitstrings from the 1D intensity vector
