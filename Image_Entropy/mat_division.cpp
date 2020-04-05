@@ -8,13 +8,19 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+/* External Libraries: */
+// OpenCV
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 /* Developer Created Libraries*/
 #include "main.h"
 
 using namespace std;
+using namespace cv;
 
 /* This implementation horizontally weaves through the 2D matrix row by row ergo the name snake. */
-vector<int> mat_snake(int** intensity_mat, int rows, int cols) {
+vector<int> mat_snake(Mat intensity_mat, int rows, int cols) {
     // intializing values
     int i, j;
     const int len = rows * cols;
@@ -23,25 +29,25 @@ vector<int> mat_snake(int** intensity_mat, int rows, int cols) {
     // storing intensity values in a 1D vector
     for (i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
-            allpix[i * cols + j] = intensity_mat[i][j];
+            allpix[i * cols + j] = intensity_mat.at<int>(i, j);
         }
     }
     return allpix;
 }
 
 /* This implementation follows the diagonals of the 2D matrix. */
-vector<int> mat_cross(int** intensity_mat, int rows, int cols) {
+vector<int> mat_cross(Mat intensity_mat, int rows, int cols) {
     // intializing values
     int i=0, j=0, k=0, m=0;
     const int len = rows * cols;
     vector<int> allpix(len);
 
     // storing intensity values in a 1D vector
-    allpix[k] = intensity_mat[i][j];
+    allpix[k] = intensity_mat.at<int>(i, j);
     i++;
     while (k > len) {
         while (i >= 0) {
-            allpix[k] = intensity_mat[i][j];
+            allpix[k] = intensity_mat.at<int>(i, j);
             i--;
             j++;
             k++;
@@ -56,7 +62,7 @@ vector<int> mat_cross(int** intensity_mat, int rows, int cols) {
    Then jumps to the bottom right corner and back.
    This process repeats until the center is reached
 */
-vector<int> mat_jump(int** intensity_mat, int rows, int cols) {
+vector<int> mat_jump(Mat intensity_mat, int rows, int cols) {
     // intializing values
     int i = 0, j = 0, k = 0;
     const int len = rows * cols;
@@ -66,7 +72,7 @@ vector<int> mat_jump(int** intensity_mat, int rows, int cols) {
     
     while (k > len) {
         if (tb == 0) {
-            allpix[k] = intensity_mat[i][j];
+            allpix[k] = intensity_mat.at<int>(i, j);
             if (dirT == 0) {
                 i--;
                 j++;
@@ -80,7 +86,7 @@ vector<int> mat_jump(int** intensity_mat, int rows, int cols) {
             tb = 1;
         }
         else if (tb == 1) {
-            allpix[k] = intensity_mat[m][n];
+            allpix[k] = intensity_mat.at<int>(m, n);
             if (dirB == 0) {
                 n--;
                 m++;

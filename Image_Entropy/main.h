@@ -14,8 +14,8 @@ struct bitstrings {
 //gen_bitstrings.cpp 
 bitstrings gen_bitstrings(std::vector<int> allpix);
 //mat_division.cpp
-std::vector<int> mat_snake(int** intensity_mat, int rows, int cols);
-std::vector<int> mat_cross(int** intensity_mat, int rows, int cols);
-std::vector<int> mat_jump(int** intensity_mat, int rows, int cols);
+std::vector<int> mat_snake(cv::Mat intensity_mat, int rows, int cols);
+std::vector<int> mat_cross(cv::Mat intensity_mat, int rows, int cols);
+std::vector<int> mat_jump(cv::Mat intensity_mat, int rows, int cols);
 //filter.cpp
 cv::Mat applyFilter(cv::Mat input);
