@@ -47,6 +47,7 @@ int** find_intensity(Mat I, int rows, int cols) {
 
 
 /* (TODO):
+    - fix debug mode
     - Design at least 2 more ways to divide up the intensity matrix and develop tests for them
     - pick source of data for choosing the bitstring that is actually used
     - start work on filters
@@ -63,6 +64,7 @@ int main() {
     // Divding up the 2D intensity matrix and storing it in a 1D intensity vector
     // (TESTING) This is one implementation of breaking up the 2D matrix the goal will be to test at least two other implementations. 
     vector<int> allpix = mat_snake(intensity_mat, rows, cols);
+    //vector<int> allpix = mat_cross(intensity_mat, rows, cols);
     
     // Generating N p&q bitstrings from the 1D intensity vector
     bitstrings bitstrings = gen_bitstrings(allpix);

@@ -27,10 +27,10 @@ bitstrings gen_bitstrings(vector<int> allpix) {
         if (flag == 1) {
             bitstrings.p.push_back("");
             if (ovr - 1 == 0) { // 1 extra value
-                bitstrings.p[k].insert(std::end(bitstrings.p[k]), pixel[pixel.size() - 1]);
+                bitstrings.p[k].insert(end(bitstrings.p[k]), pixel[pixel.size() - 1]);
             }
             else { // 2 extra values
-                bitstrings.p[k].insert(std::end(bitstrings.p[k]), std::end(pixel) - ovr + 1, std::end(pixel));
+                bitstrings.p[k].insert(end(bitstrings.p[k]), end(pixel) - ovr + 1, end(pixel));
             }
             flag = 0;
         }
@@ -50,12 +50,12 @@ bitstrings gen_bitstrings(vector<int> allpix) {
             // overage and put it into q[k]
             if ((bitstrings.p[k].size() + pixel.size()) > 512) {
                 ovr = (bitstrings.p[k].size() + pixel.size()) - 512;
-                bitstrings.p[k].insert(std::end(bitstrings.p[k]), std::begin(pixel), std::end(pixel) - ovr);
+                bitstrings.p[k].insert(end(bitstrings.p[k]), begin(pixel), end(pixel) - ovr);
                 flag = 1;
                 i++;
             }
             else {
-                bitstrings.p[k].insert(std::end(bitstrings.p[k]), std::begin(pixel), std::end(pixel));
+                bitstrings.p[k].insert(end(bitstrings.p[k]), begin(pixel), end(pixel));
                 i++;
             }
         }
@@ -69,10 +69,10 @@ bitstrings gen_bitstrings(vector<int> allpix) {
         if (flag == 1) {
             bitstrings.q.push_back("");
             if (ovr - 1 == 0) { // 1 extra value
-                bitstrings.q[k].insert(std::end(bitstrings.q[k]), pixel[pixel.size() - 1]);
+                bitstrings.q[k].insert(end(bitstrings.q[k]), pixel[pixel.size() - 1]);
             }
             else { // 2 extra values
-                bitstrings.q[k].insert(std::end(bitstrings.q[k]), std::end(pixel) - ovr + 1, std::end(pixel));
+                bitstrings.q[k].insert(end(bitstrings.q[k]),end(pixel) - ovr + 1, end(pixel));
             }
             flag = 0;
         }
@@ -92,12 +92,12 @@ bitstrings gen_bitstrings(vector<int> allpix) {
             // overage and put it into the next p[k]
             if ((bitstrings.q[k].size() + pixel.size()) > 512) {
                 ovr = (bitstrings.q[k].size() + pixel.size()) - 512;
-                bitstrings.q[k].insert(std::end(bitstrings.q[k]), std::begin(pixel), std::end(pixel) - ovr);
+                bitstrings.q[k].insert(end(bitstrings.q[k]), begin(pixel), end(pixel) - ovr);
                 flag = 1;
                 i++;
             }
             else {
-                bitstrings.q[k].insert(std::end(bitstrings.q[k]), std::begin(pixel), std::end(pixel));
+                bitstrings.q[k].insert(end(bitstrings.q[k]), begin(pixel), end(pixel));
                 i++;
             }
         }
