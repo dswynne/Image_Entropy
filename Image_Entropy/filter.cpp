@@ -4,7 +4,6 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 /* External Libraries: */
 // OpenCV
 #include <opencv2/core/core.hpp>
@@ -30,8 +29,11 @@ Mat applyFilter(Mat input) {
 	int randVal = 0;
 
 	//If not grayscale, convert to grayscale
-	if (input.channels() > 1) {
+	if (input.dims > 2) {
 		cvtColor(input, grayInput, COLOR_BGR2GRAY);
+	}
+	else {
+		grayInput = input;
 	}
 
 	//Get a value from grayscale image to use for "random" filter
@@ -45,5 +47,8 @@ Mat applyFilter(Mat input) {
 
 		}
 	}
+
+	imshow("After filter", grayInput);
+
 	return grayInput;
 }

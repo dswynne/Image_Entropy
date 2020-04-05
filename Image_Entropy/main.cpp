@@ -20,7 +20,6 @@
 /* Developer Created Libraries*/
 #include "main.h"
 #include "tools.h"
-
 using namespace cv;
 using namespace std;
 

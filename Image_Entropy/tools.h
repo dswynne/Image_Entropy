@@ -14,10 +14,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-// MPIR
-#include <mpirxx.h>
-/* Developer Created Libraries*/
-#include "main.h"
 
 using namespace std;
 
@@ -54,6 +50,93 @@ void printMatType(cv::Mat input) {
 
 void printMatArray(cv::Mat M) {
 	cout << "M = " << endl << " " << M << endl << endl;
+}
+
+//Junk function used for getPQIndices()
+int mathFunc(int a, int b) {
+	int c = 0;
+	int numCalcs = 250000;
+	for (int i = 0; i < numCalcs; i++) {
+		c = a * b;
+		c = a + b;
+	}
+	return c;
+}
+
+
+cv::Point getPQIndices(int numPStrings, int numQStrings)
+{
+	//x = p index, y = q index
+	cv::Point indices;
+
+	int N = 163;
+	int pIndex = 0;
+	int qIndex = 0;
+
+	//Figure out max number of bits needed
+	int num = N;
+	int numBits = 0;
+	while (num > 0) {
+		num /= 2;
+		numBits++;
+	}
+
+	//Start stopwatch
+	auto start = std::chrono::high_resolution_clock::now();
+
+	//Execute a function. Put in junk code for testing
+	int c = mathFunc(5, 5);
+
+	//Stop stopwatch and display elapsed time
+	auto finish = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsed = finish - start;
+
+	//Use elapsed.count() to get p and q indices. it is a double type
+	// need a number between 0 and N
+	double doubleValue = elapsed.count();
+	uint8_t* bytePointer = (uint8_t*)&doubleValue;
+	int factor = 1;
+
+	for (size_t index = 0; index < sizeof(double); index++)
+	{
+		uint8_t byte = bytePointer[index];
+		for (int bit = 0; bit < numBits; bit++)
+		{
+			if (pIndex + byte * factor > N) {
+				//Reached the value just below N
+				break;
+			}
+			else {
+				pIndex += byte * factor;
+				factor *= 2;
+			}
+		}
+	}
+	//Make factor = 2 to get different numbers for p and q index
+	factor = 2;
+	for (size_t index = 0; index < sizeof(double); index++)
+	{
+		uint8_t byte = bytePointer[index];
+
+		for (int bit = 0; bit < numBits; bit++)
+		{
+			if (qIndex + byte * factor > N) {
+				//Reached the value just below N
+				break;
+			}
+			else {
+				qIndex += byte * factor;
+				factor *= 2;
+			}
+		}
+	}
+
+	std::cout << "p Index: "<< pIndex << "\n";
+	std::cout << "q Index: " << qIndex << "\n";
+	
+	indices.x = pIndex;
+	indices.y = qIndex;
+
 }
 
 #endif // !Tools
