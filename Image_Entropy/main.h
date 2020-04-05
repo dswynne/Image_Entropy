@@ -2,6 +2,11 @@
 
 #pragma once
 
+// OpenCV
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
 struct bitstrings {
     std::vector <std::string> p, q;
 };
@@ -12,3 +17,5 @@ bitstrings gen_bitstrings(std::vector<int> allpix);
 std::vector<int> mat_snake(int** intensity_mat, int rows, int cols);
 std::vector<int> mat_cross(int** intensity_mat, int rows, int cols);
 std::vector<int> mat_jump(int** intensity_mat, int rows, int cols);
+//filter.cpp
+cv::Mat applyFilter(cv::Mat input);
