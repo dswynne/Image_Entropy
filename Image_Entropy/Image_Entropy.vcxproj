@@ -78,7 +78,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\opencv\build\include;$(IncludePath);C:\mpir-vs2019\mpir</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc15\lib;$(LibraryPath);C:\mpir-vs2019\mpir\lib\x64\Debug</LibraryPath>
+    <LibraryPath>C:\opencv\build\x64\vc15\lib;$(LibraryPath);C:\mpir-vs2019\mpir\lib\x64\Release</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

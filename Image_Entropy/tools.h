@@ -136,7 +136,7 @@ cv::Point getPQIndices(int numPStrings, int numQStrings)
 	
 	indices.x = pIndex;
 	indices.y = qIndex;
-
+	return indices;
 }
 
 #endif // !Tools

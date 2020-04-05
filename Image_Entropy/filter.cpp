@@ -13,37 +13,31 @@
 /* Developer Created Libraries*/
 #include "main.h"
 
-
 using namespace cv;
 using namespace std;
 
 //Applies a filter to add layer of random to the image
 Mat applyFilter(Mat input) {
 
-	Mat grayInput;
+	Mat grayInput = input;
 	int rows = input.rows;
 	int cols = input.cols;
-
 	int randRowIndex = rows - 1;
 	int randColIndex = cols - 1;
-	int randVal = 0;
 
 	//If not grayscale, convert to grayscale
 	if (input.dims > 2) {
 		cvtColor(input, grayInput, COLOR_BGR2GRAY);
 	}
-	else {
-		grayInput = input;
-	}
 
 	//Get a value from grayscale image to use for "random" filter
-	randVal = int(grayInput.at<uchar>(randRowIndex, randColIndex));
+	uchar randVal = grayInput.at<uchar>(randRowIndex, randColIndex);
 
 	// Apply our version of salt and pepper filter
 	for (int i = 0; i < rows; i+=2) {
 		for (int j = 0; j < cols; j+=2) {
 
-			grayInput.at<int>(i, j) = randVal;
+			grayInput.at<uchar>(i, j) = randVal;
 
 		}
 	}

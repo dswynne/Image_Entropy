@@ -61,7 +61,6 @@ int main() {
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp
     Mat filteredImage = applyFilter(I);
-
     /*// Storing intensity values of image
     Mat intensity_mat = find_intensity(I, rows, cols);*/
     
