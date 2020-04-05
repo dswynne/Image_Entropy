@@ -29,7 +29,7 @@ vector<int> mat_snake(Mat intensity_mat, int rows, int cols) {
     // storing intensity values in a 1D vector
     for (i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
-            allpix[i * cols + j] = intensity_mat.at<int>(i, j);
+            allpix[i * cols + j] = int(intensity_mat.at<uchar>(i, j));
         }
     }
     return allpix;
@@ -47,7 +47,7 @@ vector<int> mat_cross(Mat intensity_mat, int rows, int cols) {
     i++;
     while (k > len) {
         while (i >= 0) {
-            allpix[k] = intensity_mat.at<int>(i, j);
+            allpix[k] = int(intensity_mat.at<uchar>(i, j));
             i--;
             j++;
             k++;
@@ -72,7 +72,7 @@ vector<int> mat_jump(Mat intensity_mat, int rows, int cols) {
     
     while (k > len) {
         if (tb == 0) {
-            allpix[k] = intensity_mat.at<int>(i, j);
+            allpix[k] = int(intensity_mat.at<uchar>(i, j));
             if (dirT == 0) {
                 i--;
                 j++;
@@ -86,7 +86,7 @@ vector<int> mat_jump(Mat intensity_mat, int rows, int cols) {
             tb = 1;
         }
         else if (tb == 1) {
-            allpix[k] = intensity_mat.at<int>(m, n);
+            allpix[k] = int(intensity_mat.at<uchar>(m, n));
             if (dirB == 0) {
                 n--;
                 m++;
