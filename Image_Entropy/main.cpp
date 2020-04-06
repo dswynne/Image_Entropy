@@ -23,35 +23,6 @@
 using namespace cv;
 using namespace std;
 
-
-/* Taking the intensity values of each pixel and storing it in a 2D matrix
-
-int** find_intensity(Mat I, int rows, int cols) {
-    // intializing values
-    unsigned char intensity;
-    int** intensity_mat = 0;
-    intensity_mat = new int* [rows];
-    int i, j;
-
-    // storing intensity values
-    for (i = 0; i < rows; i++) {
-        intensity_mat[i] = new int[cols];
-        for (j = 0; j < cols; j++) {
-            intensity = I.at<uchar>(i, j);
-            intensity_mat[i][j] = int(intensity);
-        }
-    }
-    
-    return intensity_mat;
-}*/
-
-
-/* (TODO):
-    - fix debug mode
-    - Design at least 2 more ways to divide up the intensity matrix and develop tests for them
-    - pick source of data for choosing the bitstring that is actually used
-    - start work on filters
-*/
 int main() {
 	// Getting image
     Mat I = imread("Lena.bmp");
@@ -61,14 +32,13 @@ int main() {
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp
     Mat filteredImage = applyFilter(I);
-    /*// Storing intensity values of image
-    Mat intensity_mat = find_intensity(I, rows, cols);*/
     
     // Divding up the 2D intensity Mat and storing it in a 1D intensity vector
-    // (TESTING) This is one implementation of breaking up the 2D matrix the goal will be to test at least two other implementations. 
-    vector<int> allpix = mat_snake(filteredImage, rows, cols);
-    //vector<int> allpix = mat_cross(intensity_mat, rows, cols);
-    
+    // (TESTING) Three seperate implementations for testing 
+    //vector<int> allpix = mat_snake(filteredImage, rows, cols);
+    vector<int> allpix = mat_cross(filteredImage, rows, cols);
+    //vector<int> allpix = mat_jump(filteredImage, rows, cols);
+
     // Generating N p&q bitstrings from the 1D intensity vector
     bitstrings bitstrings = gen_bitstrings(allpix);
 
@@ -77,25 +47,36 @@ int main() {
     // Might just want to keep the randomization strictly image processing based
 
     // Picking a random bitstring from the struct of vector strings for p&q
-    // (NEED TO)  Pick a source of randomization that isn't the standard rand func
-    int pSZ = bitstrings.p.size();
-    int qSZ = bitstrings.q.size();
-    srand(time(NULL));
-    int pIdx = rand() % pSZ;
-    int qIdx = rand() % qSZ;
-    std::vector<char*> cstringsP, cstringsQ; // (NEED TO) Check if these actually need to be vectors or if you can just pull it out as a const char*
-    cstringsP.reserve(pSZ);
-    cstringsP.push_back(const_cast<char*>(bitstrings.p[pIdx].c_str()));
-    cstringsQ.reserve(qSZ);
-    cstringsQ.push_back(const_cast<char*>(bitstrings.q[qIdx].c_str()));
+    int numPStrings = bitstrings.p.size();
+    int numQStrings = bitstrings.q.size();
+    Point pq = getPQIndices(numPStrings, numQStrings);
+    int pIdx = pq.x;
+    int qIdx = pq.y;
+    const char* cstringsP; 
+    const char* cstringsQ;
+    cstringsP = const_cast<char*>(bitstrings.p[pIdx].c_str());
+    cstringsQ = const_cast<char*>(bitstrings.q[qIdx].c_str());
      
     // Converting bitstrings back to ints
     mpz_t pInt;
     mpz_t qInt;
     mpz_init(pInt);
     mpz_init(qInt);
-    mpz_set_str(pInt, cstringsP[0], 10);
-    mpz_set_str(qInt, cstringsQ[0], 10);
+    mpz_set_str(pInt, cstringsP, 10);
+    mpz_set_str(qInt, cstringsQ, 10);
+
+    // Find a the next prime greater than pInt and qInt
+    mpz_t pPrime;
+    mpz_t qPrime;
+    mpz_init(pInt);
+    mpz_init(qInt);
+    gmp_randstate_t pState;
+    gmp_randstate_t qState;
+    gmp_randinit_mt(pState);
+    gmp_randinit_mt(qState);
+    mpz_next_prime_candidate(pPrime, pInt, pState);
+    mpz_next_prime_candidate(qPrime, qInt, qState);
+
 
 
 	return 0;
