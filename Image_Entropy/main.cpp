@@ -28,6 +28,11 @@ int main() {
     Mat I = imread("Lena.bmp");
     int rows = I.rows;
     int cols = I.cols;
+
+    int lowerThresh = 20;
+    int upperThresh = 220;
+
+    I = detectBadImage(I, lowerThresh, upperThresh);
     
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp

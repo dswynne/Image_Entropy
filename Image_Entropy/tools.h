@@ -139,4 +139,94 @@ cv::Point getPQIndices(int numPStrings, int numQStrings)
 	return indices;
 }
 
+//Finds alpha and beta to correct grayscale image
+cv::Point2f autoAdjustImage(cv::Mat src, float clipHistPercent)
+{
+	cv::Point2f output;
+	int histSize = 256;
+	float alpha, beta;
+	double minGray = 0, maxGray = 0;
+
+	//to calculate grayscale histogram
+	cv::Mat gray;
+	if (src.type() == CV_8UC1) gray = src;
+	else if (src.type() == CV_8UC3) cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+	else if (src.type() == CV_8UC4) cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+	if (clipHistPercent == 0)
+	{
+		// keep full available range
+		cv::minMaxLoc(gray, &minGray, &maxGray);
+	}
+	else
+	{
+		cv::Mat hist; //the grayscale histogram
+
+		float range[] = { 0, 256 };
+		const float* histRange = { range };
+		bool uniform = true;
+		bool accumulate = false;
+		calcHist(&gray, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+
+		// calculate cumulative distribution from the histogram
+		std::vector<float> accumulator(histSize);
+		accumulator[0] = hist.at<float>(0);
+		for (int i = 1; i < histSize; i++)
+		{
+			accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+		}
+
+		// locate points that cuts at required value
+		float max = accumulator.back();
+		clipHistPercent *= (max / 100.0); //make percent as absolute
+		clipHistPercent /= 2.0; // left and right wings
+		// locate left cut
+		minGray = 0;
+		while (accumulator[minGray] < clipHistPercent)
+			minGray++;
+
+		// locate right cut
+		maxGray = histSize - 1;
+		while (accumulator[maxGray] >= (max - clipHistPercent))
+			maxGray--;
+	}
+
+	alpha = 255 / (maxGray - minGray);
+	beta = -minGray * alpha;
+
+	output.x = alpha;
+	output.y = beta;
+	return output;
+}
+
+
+//Detects if image is too monochromatic. Will change image if there is too much of one color above
+//the threshold
+cv::Mat detectBadImage(cv::Mat input, int upperThesh, int lowerThresh)
+{
+	cv::Mat output = input;
+	cv::Mat grayInput;
+	double alpha = 0.0;
+	double beta = 0;
+	int rgbFlag = 0;
+
+	if (input.dims > 2) {
+		//Image is  RGB and must check all three channels
+		rgbFlag = 1;
+	}
+
+	//Use the grayscale image to fix the original image
+	cv::Point2f values = autoAdjustImage(input, 0.0);
+	alpha = (double)values.x;
+	beta = (double)values.y;
+	
+	convertScaleAbs(input, output, alpha, beta);
+
+	if (rgbFlag) {
+		cout << "Need to analyze RGB channels for correction\n";
+		cout << "This has not been implemented yet\n";
+	}
+
+	return output;
+}
+
 #endif // !Tools
