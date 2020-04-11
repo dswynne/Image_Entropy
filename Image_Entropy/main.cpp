@@ -25,15 +25,15 @@ using namespace cv;
 using namespace std;
 
 int main() {
-        ofstream myfile;
-        myfile.open("example.txt");
-        // Getting image
-        Mat I = imread("Lena.bmp");
-        int rows = I.rows;
-        int cols = I.cols;
+    ofstream myfile;
+    myfile.open("example.txt");
+    // Getting image
+    Mat I = imread("Lena.bmp");
+    int rows = I.rows;
+    int cols = I.cols;
 
-        int lowerThresh = 20;
-        int upperThresh = 220;
+    int lowerThresh = 20;
+    int upperThresh = 220;
 
     I = detectBadImage(I, lowerThresh, upperThresh);
     if (countNonZero(I) == 0) {
@@ -53,18 +53,18 @@ int main() {
     vector<int> allpix = mat_cross(filteredImage);
     //vector<int> allpix = mat_jump(filteredImage);
 
-        // Generating N 32 byte bitstrings from the 1D intensity vector
-        vector<string> bitstrings = gen_bitstrings_new(allpix);
+    // Generating N 32 byte bitstrings from the 1D intensity vector
+    vector<string> bitstrings = gen_bitstrings_new(allpix);
+   
+    // Picking a random 32 byte bitsring from the vector of strings
+    int numStrings = bitstrings.size();
+    int index = get_random_index(numStrings);
 
-        // Picking a random 32 byte bitsring from the vector of strings
-        int numStrings = bitstrings.size();
-        int index = get_random_index(numStrings);
-
-        /* CODE TO TEST RANDOMNESS WILL BREAK OUT LATER*/
-        string seed = bitstrings[index];
-        myfile << seed << "\n";
-        /*END OF CODE TO TEST RANDOMNESS */
-    
+    /* CODE TO TEST RANDOMNESS WILL BREAK OUT LATER*/
+    string seed = bitstrings[index];
+    myfile << seed << "\n";
     myfile.close();
-	return 0;
+    /*END OF CODE TO TEST RANDOMNESS */
+    
+   return 0;
 }
