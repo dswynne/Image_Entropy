@@ -33,6 +33,12 @@ int main() {
     int upperThresh = 220;
 
     I = detectBadImage(I, lowerThresh, upperThresh);
+    if (countNonZero(I) == 0) {
+        //Image is all black and a bad image
+        cout << "Bad image provided. Please take a new image with more color diversity\n";
+        waitKey();
+        return 0;
+    }
     
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp
