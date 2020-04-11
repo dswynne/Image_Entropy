@@ -220,7 +220,7 @@ cv::Point2f autoAdjustImage(cv::Mat src, float clipHistPercent)
 		accumulator[0] = hist.at<float>(0);
 		for (int i = 1; i < histSize; i++)
 		{
-			accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+			accumulator[i] = accumulator[i-1] + hist.at<float>(i);
 		}
 
 		// locate points that cuts at required value
@@ -256,6 +256,7 @@ cv::Mat detectBadImage(cv::Mat input, int upperThesh, int lowerThresh)
 	double alpha = 0.0;
 	double beta = 0;
 	int rgbFlag = 0;
+	int badImage = 0;
 
 	if (input.dims > 2) {
 		//Image is  RGB and must check all three channels
@@ -272,6 +273,11 @@ cv::Mat detectBadImage(cv::Mat input, int upperThesh, int lowerThresh)
 	if (rgbFlag) {
 		cout << "Need to analyze RGB channels for correction\n";
 		cout << "This has not been implemented yet\n";
+	}
+
+	//Make output image all black to signal a bad image
+	if (badImage) {
+		output.setTo(cv::Scalar::all(0));
 	}
 
 	return output;

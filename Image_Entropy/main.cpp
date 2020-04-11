@@ -35,14 +35,23 @@ int main() {
         int lowerThresh = 20;
         int upperThresh = 220;
 
-        I = detectBadImage(I, lowerThresh, upperThresh);
-
-        // For testing filter function. Won't modify main.cpp any more until I finish this
-        // Implemented in filter.cpp
-        Mat filteredImage = applyFilter(I);
-
-        // Divding up the 2D intensity Mat and storing it in a 1D intensity vector
-        vector<int> allpix = mat_cross(I);
+    I = detectBadImage(I, lowerThresh, upperThresh);
+    if (countNonZero(I) == 0) {
+        //Image is all black and a bad image
+        cout << "Bad image provided. Please take a new image with more color diversity\n";
+        waitKey();
+        return 0;
+    }
+    
+    // For testing filter function. Won't modify main.cpp any more until I finish this
+    //Implemented in filter.cpp
+    Mat filteredImage = applyFilter(I);
+    
+    // Divding up the 2D intensity Mat and storing it in a 1D intensity vector
+    // (TESTING) Three seperate implementations for testing 
+    //vector<int> allpix = mat_snake(filteredImage);
+    vector<int> allpix = mat_cross(filteredImage);
+    //vector<int> allpix = mat_jump(filteredImage);
 
         // Generating N 32 byte bitstrings from the 1D intensity vector
         vector<string> bitstrings = gen_bitstrings_new(allpix);
