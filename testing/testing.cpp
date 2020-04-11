@@ -15,6 +15,43 @@
 using namespace cv;
 using namespace std;
 
+//Code for reading a folder of images
+/*
+-------------------------------------------------------
+//Read all images in a folder
+
+vector<cv::String> filenames;	//Holds filenames of all images in the folder
+
+// First argument is the Filename of folder you want to work on
+// Must add double \\ as a single \ will trigger an escape sequence
+// Must add *.filetype. In this case I was using .jpg files
+// 'filenames' is the name of the string vector above
+// I forget why false is the last argument
+
+
+glob("C:\\Users\\Jonathan\\Documents\\...\\*.jpg", filenames, false);
+
+
+//Vector that holds all of the images in the folder
+vector<Mat> images;
+size_t count = filenames.size(); //number of image files in the folder
+
+// Create array of filenames
+for (size_t i = 0; i < count; i++) {
+    images.push_back(imread(filenames[i]));
+}
+
+Mat imageToTest;
+
+// Run through all the images
+for (size_t i = 0; i < count; i++) {
+    imageToTest = images[i];
+
+    //Run testing code
+
+-------------------------------------------------------
+*/
+
 
 metric_ent test_single_string_entropy(string stringP, string stringQ) {
     // Computing Shanon Entropy
