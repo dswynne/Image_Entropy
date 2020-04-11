@@ -17,6 +17,7 @@ using namespace cv;
 using namespace std;
 
 //Applies a filter to add layer of random to the image
+
 Mat applyFilter(Mat input) {
 
 	Mat grayInput = input;
@@ -42,7 +43,7 @@ Mat applyFilter(Mat input) {
 		}
 	}
 
-	imshow("After filter", grayInput);
+	//imshow("After filter", grayInput);
 
 	return grayInput;
 }

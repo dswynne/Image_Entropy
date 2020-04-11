@@ -139,6 +139,54 @@ cv::Point getPQIndices(int numPStrings, int numQStrings)
 	return indices;
 }
 
+int get_random_index(int numStrings) {
+
+	int N = numStrings;
+	int index = 0;
+
+	//Figure out max number of bits needed
+	int num = N;
+	int numBits = 0;
+	while (num > 0) {
+		num /= 2;
+		numBits++;
+	}
+
+	//Start stopwatch
+	auto start = std::chrono::high_resolution_clock::now();
+
+	//Execute a function. Put in junk code for testing
+	int c = mathFunc(5, 5);
+
+	//Stop stopwatch and display elapsed time
+	auto finish = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsed = finish - start;
+
+	//Use elapsed.count() to get p and q indices. it is a double type
+	// need a number between 0 and N
+	double doubleValue = elapsed.count();
+	uint8_t* bytePointer = (uint8_t*)&doubleValue;
+	int factor = 1;
+
+	for (size_t index = 0; index < sizeof(double); index++)
+	{
+		uint8_t byte = bytePointer[index];
+		for (int bit = 0; bit < numBits; bit++)
+		{
+			if (index + byte * factor > N) {
+				//Reached the value just below N
+				break;
+			}
+			else {
+				index += byte * factor;
+				factor *= 2;
+			}
+		}
+	}
+	
+	return index;
+}
+
 //Finds alpha and beta to correct grayscale image
 cv::Point2f autoAdjustImage(cv::Mat src, float clipHistPercent)
 {

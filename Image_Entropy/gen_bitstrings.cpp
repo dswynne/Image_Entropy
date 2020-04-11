@@ -10,6 +10,7 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include <bitset>
 /* Developer Created Libraries*/
 #include "main.h"
 
@@ -106,5 +107,23 @@ bitstrings gen_bitstrings(vector<int> allpix) {
     // Throwing away bit strings that aren't 512 long
     bitstrings.p.erase(bitstrings.p.begin() + k - 1);
     bitstrings.q.erase(bitstrings.q.begin() + k - 1);
+    return bitstrings;
+}
+
+vector<string> gen_bitstrings_new(vector<int> allpix) {
+    int i = 0, k = 0, n = 0;
+    vector<string> bitstrings;
+    string btstr;
+
+    // finding 32 byte bitstrings
+    while (i+32 < allpix.size()) {
+        bitstrings.push_back("");
+        for (k = i; k < i+32; k++) {
+            btstr = bitset<8>(allpix[k]).to_string();
+            bitstrings[n].insert(end(bitstrings[n]), begin(btstr), end(btstr));
+        }
+        i = k + 1;
+        n++;
+    }
     return bitstrings;
 }
