@@ -188,7 +188,7 @@ int get_random_index(int numStrings) {
 }
 
 //Finds alpha and beta to correct grayscale image
-cv::Point2f autoAdjustImage(cv::Mat src, float clipHistPercent)
+cv::Point2f autoAdjustImage(cv::Mat input, float clipHistPercent)
 {
 	cv::Point2f output;
 	int histSize = 256;
@@ -197,9 +197,13 @@ cv::Point2f autoAdjustImage(cv::Mat src, float clipHistPercent)
 
 	//to calculate grayscale histogram
 	cv::Mat gray;
-	if (src.type() == CV_8UC1) gray = src;
-	else if (src.type() == CV_8UC3) cvtColor(src, gray, cv::COLOR_BGR2GRAY);
-	else if (src.type() == CV_8UC4) cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+	if (input.type() == CV_8UC1) 
+		gray = input;
+	else if (input.type() == CV_8UC3) 
+		cvtColor(input, gray, cv::COLOR_BGR2GRAY);
+	else if (input.type() == CV_8UC4) 
+		cvtColor(input, gray, cv::COLOR_BGR2GRAY);
+
 	if (clipHistPercent == 0)
 	{
 		// keep full available range
@@ -246,38 +250,80 @@ cv::Point2f autoAdjustImage(cv::Mat src, float clipHistPercent)
 	return output;
 }
 
+// Check if there is too much of one color in image
+// Returns 1 if image is ok
+// Returns 0 if image is not ok
+int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) {
+
+	int upperFlag[3] = { 0 };
+	int lowerFlag[3] = { 0 };
+
+	//Get mean r, g, b channel values
+	Scalar meanValues = cv::mean(input);
+
+	// If some of the channels are above upperThresh while others are below lowerThresh, probably too much of a color
+	for (int i = 0; i < 3; i++) {
+		//Set flags to indicate channels that are above or below the threshold
+		if (meanValues[i] >= upperThresh)
+			upperFlag[i] = 1;
+		if (meanValues[i] <= lowerThresh)
+			lowerFlag[i] = 1;
+	}
+
+	//First check R, G, B. check if one channel is high while others are low
+	if (upperFlag[0] && lowerFlag[1] && lowerFlag[2]) {
+		return 0;
+	}
+	else if (upperFlag[1] && lowerFlag[0] && lowerFlag[2]) {
+			return 0;
+	}
+	else if (upperFlag[2] && lowerFlag[0] && lowerFlag[1]) {
+		return 0;
+	}
+
+	//Second, Check pairs of channels that are high while third channel is low
+
+	//Not sure if this necessary, I don't know what the RGB values of normal images are
+
+	//Third, check for all white image
+	if (upperFlag[0] && upperFlag[1] && upperFlag[2])
+		return 0;
+
+	//Fourth, check for all black image
+	if (lowerFlag[0] && lowerFlag[1] && lowerFlag[2])
+		return 0;
+
+	return 1;
+}
 
 //Detects if image is too monochromatic. Will change image if there is too much of one color above
 //the threshold
-cv::Mat detectBadImage(cv::Mat input, int upperThesh, int lowerThresh)
+cv::Mat detectBadImage(cv::Mat input)
 {
 	cv::Mat output = input;
 	cv::Mat grayInput;
 	double alpha = 0.0;
 	double beta = 0;
-	int rgbFlag = 0;
-	int badImage = 0;
-
-	if (input.dims > 2) {
-		//Image is  RGB and must check all three channels
-		rgbFlag = 1;
-	}
+	int lowerThresh = 20;
+	int upperThresh = 220;
 
 	//Use the grayscale image to fix the original image
-	cv::Point2f values = autoAdjustImage(input, 0.0);
+	cv::Point2f values = autoAdjustImage(input, 0.25);
 	alpha = (double)values.x;
 	beta = (double)values.y;
 	
 	convertScaleAbs(input, output, alpha, beta);
 
-	if (rgbFlag) {
+	if (input.dims > 2) {
+		//Image is  RGB and must check all three channels
+
 		cout << "Need to analyze RGB channels for correction\n";
 		cout << "This has not been implemented yet\n";
-	}
 
-	//Make output image all black to signal a bad image
-	if (badImage) {
-		output.setTo(cv::Scalar::all(0));
+		if (!checkRGBImageColors(input, upperThresh, lowerThresh)) {
+			//Make output image all black to signal a bad image
+			output.setTo(cv::Scalar::all(0));
+		}
 	}
 
 	return output;
