@@ -268,7 +268,7 @@ vector<int> mat_jump(Mat intensity_mat) {
 
         // Checking if we have reached the main diagonal (bottom left corner to the bottom right corner)
         if (j == cols - 1) {
-            tb == 2;
+            tb = 2;
         }
 
     }
