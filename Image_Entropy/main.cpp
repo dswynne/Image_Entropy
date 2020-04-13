@@ -41,15 +41,15 @@ int main(int argc, char* argv[]) {
     int cols = I.cols;
 
  
-    /*I = detectBadImage(I);
-    if (countNonZero(I) == 0) {
+    I = detectBadImage(I);
+    if (countNonZero(I) == 0) {       
         //Image is all black and a bad image
         cout << "Bad image provided. Please take a new image with more color diversity\n";
 
         //Close file and go to next image
         myfile.close();
         return 0;
-    }*/
+    }
     
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp

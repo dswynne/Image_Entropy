@@ -311,15 +311,10 @@ inline cv::Mat detectBadImage(cv::Mat input)
 	cv::Point2f values = autoAdjustImage(input, 0.25);
 	alpha = (double)values.x;
 	beta = (double)values.y;
-	
 	convertScaleAbs(input, output, alpha, beta);
 
 	if (input.dims > 2) {
 		//Image is  RGB and must check all three channels
-
-		cout << "Need to analyze RGB channels for correction\n";
-		cout << "This has not been implemented yet\n";
-
 		if (!checkRGBImageColors(input, upperThresh, lowerThresh)) {
 			//Make output image all black to signal a bad image
 			output.setTo(cv::Scalar::all(0));
