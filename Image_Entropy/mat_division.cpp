@@ -20,6 +20,11 @@
 using namespace std;
 using namespace cv;
 
+/* This function is called by all implementations of matrix dividing. 
+   It simply takes a rectangular matrix and makes it a square matrix.
+   This helps with simplifyinhg logic in the matrix diving functions
+   as well as further altering the initial input image.
+*/
 vector<vector<int>> make_square(Mat intensity_mat) {
     int i, j;
     const int rows = intensity_mat.rows;

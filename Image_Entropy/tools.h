@@ -18,7 +18,7 @@
 using namespace std;
 
 //Takes an OpenCV type and turns it into a string so it can be printed 
-string type2str(int type) {
+inline string type2str(int type) {
 	string r;
 
 	uchar depth = type & CV_MAT_DEPTH_MASK;
@@ -42,18 +42,18 @@ string type2str(int type) {
 }
 
 //Prints the type of the Mat file. Used for debugging
-void printMatType(cv::Mat input) {
+inline void printMatType(cv::Mat input) {
 	string imageInfo = type2str(input.type());
 	cout << "\n\n" << imageInfo.c_str() << "\n\n";
 }
 
 
-void printMatArray(cv::Mat M) {
+inline void printMatArray(cv::Mat M) {
 	cout << "M = " << endl << " " << M << endl << endl;
 }
 
 //Junk function used for getPQIndices()
-int mathFunc(int a, int b) {
+inline int mathFunc(int a, int b) {
 	int c = 0;
 	int numCalcs = 250000;
 	for (int i = 0; i < numCalcs; i++) {
@@ -64,7 +64,7 @@ int mathFunc(int a, int b) {
 }
 
 
-cv::Point getPQIndices(int numPStrings, int numQStrings)
+inline cv::Point getPQIndices(int numPStrings, int numQStrings)
 {
 	//x = p index, y = q index
 	cv::Point indices;
@@ -139,7 +139,7 @@ cv::Point getPQIndices(int numPStrings, int numQStrings)
 	return indices;
 }
 
-int get_random_index(int numStrings) {
+inline int get_random_index(int numStrings) {
 
 	int N = numStrings;
 	int index = 0;
@@ -188,7 +188,7 @@ int get_random_index(int numStrings) {
 }
 
 //Finds alpha and beta to correct grayscale image
-cv::Point2f autoAdjustImage(cv::Mat input, float clipHistPercent)
+inline cv::Point2f autoAdjustImage(cv::Mat input, float clipHistPercent)
 {
 	cv::Point2f output;
 	int histSize = 256;
@@ -253,13 +253,13 @@ cv::Point2f autoAdjustImage(cv::Mat input, float clipHistPercent)
 // Check if there is too much of one color in image
 // Returns 1 if image is ok
 // Returns 0 if image is not ok
-int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) {
+inline int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) {
 
 	int upperFlag[3] = { 0 };
 	int lowerFlag[3] = { 0 };
 
 	//Get mean r, g, b channel values
-	Scalar meanValues = cv::mean(input);
+	cv::Scalar meanValues = cv::mean(input);
 
 	// If some of the channels are above upperThresh while others are below lowerThresh, probably too much of a color
 	for (int i = 0; i < 3; i++) {
@@ -298,7 +298,7 @@ int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) {
 
 //Detects if image is too monochromatic. Will change image if there is too much of one color above
 //the threshold
-cv::Mat detectBadImage(cv::Mat input)
+inline cv::Mat detectBadImage(cv::Mat input)
 {
 	cv::Mat output = input;
 	cv::Mat grayInput;

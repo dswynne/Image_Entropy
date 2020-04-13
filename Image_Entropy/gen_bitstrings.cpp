@@ -13,10 +13,13 @@
 #include <bitset>
 /* Developer Created Libraries*/
 #include "main.h"
+#include "tools.h"
 
 using namespace std;
 
-bitstrings gen_bitstrings(vector<int> allpix) {
+/* THIS IS AN OBSOLETE FUNCTION AND WILL BE REMOVED SOON */
+/* This function takes the 1D intensity array and generates strigns of decimals 512 long for p&q */
+bitstrings gen_bitstrings_old(vector<int> allpix) {
     // intializing values
     bitstrings bitstrings;
     string pixel;
@@ -110,7 +113,10 @@ bitstrings gen_bitstrings(vector<int> allpix) {
     return bitstrings;
 }
 
-vector<string> gen_bitstrings_new(vector<int> allpix) {
+/* This function takes the 1D intensity array and converts each value to its 8 bit binary representation.
+   These binary values are then appended into bitstrings 256 bits long each.
+*/
+vector<string> gen_bitstrings(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
     string btstr;
@@ -126,4 +132,33 @@ vector<string> gen_bitstrings_new(vector<int> allpix) {
         n++;
     }
     return bitstrings;
+}
+
+/* This function takes a random bitstring that was generated in gen_bitstrings() and stores it into the final seed.
+   The process to store bits in this seed is called a Von Neumman Extractor.
+   If two successive bits match, no output is fed into the seed. 
+   If the bits differ, the value of the first bit is fed into the seed.
+*/
+string vn_extractor(vector<string> bitstrings) {
+    int numStrings = bitstrings.size();
+    int index; 
+    int k = 0, i = 0;
+    string curstr, seed;
+    while (k < 256) {
+        index = get_random_index(numStrings);
+        curstr = bitstrings[index];
+        while (i < 256 && k < 256) {
+            if (curstr[i] == curstr[i + 1]) {
+                i = i + 2;
+            }
+            else if (curstr[i] != curstr[i + 1]) {
+                seed += curstr[i];
+                k++;
+                i = i + 2;
+            }
+        }
+        i = 0;
+    }
+    return seed;
+
 }

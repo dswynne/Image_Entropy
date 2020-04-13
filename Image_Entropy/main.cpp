@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     int cols = I.cols;
 
  
-    I = detectBadImage(I);
+    /*I = detectBadImage(I);
     if (countNonZero(I) == 0) {
         //Image is all black and a bad image
         cout << "Bad image provided. Please take a new image with more color diversity\n";
@@ -55,21 +55,21 @@ int main(int argc, char* argv[]) {
     //Implemented in filter.cpp
     Mat filteredImage = applyFilter(I);
 
-    // Divding up the 2D intensity Mat and storing it in a 1D intensity vector
-    // (TESTING) Three seperate implementations for testing 
-    //vector<int> allpix = mat_snake(filteredImage);
+    // Divding up the 2D intensity Mat and storing it in a 1D intensity vector 
     vector<int> allpix = mat_cross(filteredImage);
-    //vector<int> allpix = mat_jump(filteredImage);
 
     // Generating N 32 byte bitstrings from the 1D intensity vector
-    vector<string> bitstrings = gen_bitstrings_new(allpix);
-
-    // Picking a random 32 byte bitsring from the vector of strings
+    vector<string> bitstrings = gen_bitstrings(allpix);
+    
+    // Using a Von Neumman Extractor to generate a seed that is closer to truly random
+    string seed = vn_extractor(bitstrings);
+    
+    /*// Picking a random 32 byte bitsring from the vector of strings
     int numStrings = bitstrings.size();
     int index = get_random_index(numStrings);
-
+    string seed = bitstrings[index];*/
+    
     // Outputting seed into a file
-    string seed = bitstrings[index];
     myfile << seed << "\n";
     myfile.close();
     cout << "seed written" << endl;
