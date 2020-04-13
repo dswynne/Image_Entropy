@@ -10,110 +10,66 @@
 #include <time.h>
 #include <algorithm>
 #include <math.h>
+/* External Libraries: */
+// OpenCV
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+/*// NIST STS
+#include "defs.h"
+#include "externs.h"
+#include "config.h"
+#include "stat_fncs.h"
+#include "utilities.h"*/
 /* Developer Created Libraries*/
-#include "testing.h"
+#include "nist_sts_tests.h"
+//#include "../Image_Entropy/main.h"
+//#include "../Image_Entropy/tools.h"
+
 using namespace cv;
 using namespace std;
 
-//Code for reading a folder of images
-/*
--------------------------------------------------------
-//Read all images in a folder
 
-vector<cv::String> filenames;	//Holds filenames of all images in the folder
-
-// First argument is the Filename of folder you want to work on
-// Must add double \\ as a single \ will trigger an escape sequence
-// Must add *.filetype. In this case I was using .jpg files
-// 'filenames' is the name of the string vector above
-// I forget why false is the last argument
-
-
-glob("C:\\Users\\Jonathan\\Documents\\...\\*.jpg", filenames, false);
-
-
-//Vector that holds all of the images in the folder
-vector<Mat> images;
-size_t count = filenames.size(); //number of image files in the folder
-
-// Create array of filenames
-for (size_t i = 0; i < count; i++) {
-    images.push_back(imread(filenames[i]));
-}
-
-Mat imageToTest;
-
-// Run through all the images
-for (size_t i = 0; i < count; i++) {
-    imageToTest = images[i];
-
-    //Run testing code
-
--------------------------------------------------------
-*/
-
-
-metric_ent test_single_string_entropy(string stringP, string stringQ) {
-    // Computing Shanon Entropy
-    double numCountsP[10], numCountsQ[10];
-    char nums[10] = { '0','1','2','3','4','5','6','7','8','9' };
-    int i;
-    for (i = 0; i < 10; i++) {
-        numCountsP[i] = count(stringP.begin(), stringP.end(), nums[i]);
-        numCountsQ[i] = count(stringQ.begin(), stringQ.end(), nums[i]);
-    }
-    double shanonP = 0;
-    double shanonQ = 0;
-    double curP, curQ;
-    for (i = 0; i < 10; i++) {
-        curP = numCountsP[i] / double(stringP.size());
-        curQ = numCountsQ[i] / double(stringQ.size());
-        shanonP += (curP)*log2(curP);
-        shanonQ += (curQ)*log2(curQ);
-    }
-
-    // Compuiting Metric Entropy
-    metric_ent metric_ent;
-    metric_ent.p = (-1) * shanonP / double(stringP.size());
-    metric_ent.q = (-1) * shanonQ / double(stringQ.size());
-
-    return metric_ent;
-}
-
-double test_single_string_entropy_new(string seed) {
-    // Computing Shanon Entropy
-    double numCounts[2];
-    char nums[2] = { '0','1' };
-    int i;
-    for (i = 0; i < 2; i++) {
-        numCounts[i] = count(seed.begin(), seed.end(), nums[i]);
-    }
-    double shanon = 0;
-    double cur;
-    for (i = 0; i < 2; i++) {
-        cur = numCounts[i] / double(seed.size());
-        shanon += (cur)*log2(cur);
-    }
-
-    // Compuiting Metric Entropy
-    double metric_ent;
-    metric_ent = (-1) * shanon / double(seed.size());
-
-    return metric_ent;
-}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    char choice[1];
+    // put in prompt asking yourself if you want to do this or just skip to testing
+    printf("Read in new images? 1 for yes, 0 for no: ");
+    scanf_s("%1d", choice);
+    if ((int)choice[0] == 1) {
+            /* Code for reading a folder of images */
+            //Read all images in a folder
+            vector<cv::String> filenames;	//Holds filenames of all images in the folder
+            glob("D:\\Pictures\\ENEE408GImages\\wallpapers\\*", filenames, false);
+            int i;
+            string cmd;
+            string exec = "C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\x64\\Release\\Image_Entropy.exe ";
+            for (i = 0; i < filenames.size(); i++) {
+                cmd = exec + filenames[i];
+                system(cmd.c_str());
+            }
+
+            /*//Vector that holds all of the images in the folder
+            vector<Mat> images;
+            size_t count = filenames.size(); //number of image files in the folder
+
+            // Create array of filenames
+            for (size_t i = 0; i < count; i++) {
+                images.push_back(imread(filenames[i]));
+            }
+
+            Mat imageToTest;
+            // Run through all the images
+            for (size_t i = 0; i < count; i++) {
+                imageToTest = images[i];
+            }*/
+    }
+    
+
+     
+    //Run testing code
+    string epsilon = readBinaryDigitsInASCIIFormat();
+    Frequency(epsilon);
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

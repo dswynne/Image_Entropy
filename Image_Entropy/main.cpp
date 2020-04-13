@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <fstream>
+#include <direct.h>
 /* External Libraries: */
 // OpenCV
 #include <opencv2/core/core.hpp>
@@ -24,11 +25,18 @@
 using namespace cv;
 using namespace std;
 
-int main() {
+
+int main(int argc, char* argv[]) {
     ofstream myfile;
-    myfile.open("example.txt");
+    myfile.open("output.txt", ios_base::app);
     // Getting image
-    Mat I = imread("Lena.bmp");
+    Mat I;
+    if (argc < 2) {
+         I = imread("C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\Image_Entropy\\images\\Lena.bmp");
+    }
+    else {
+        I = imread(argv[1]);
+    }
     int rows = I.rows;
     int cols = I.cols;
 
@@ -41,12 +49,12 @@ int main() {
         //Close file and go to next image
         myfile.close();
         return 0;
-    }
+    }*/
     
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp
     Mat filteredImage = applyFilter(I);
-    
+
     // Divding up the 2D intensity Mat and storing it in a 1D intensity vector
     // (TESTING) Three seperate implementations for testing 
     //vector<int> allpix = mat_snake(filteredImage);
@@ -55,16 +63,17 @@ int main() {
 
     // Generating N 32 byte bitstrings from the 1D intensity vector
     vector<string> bitstrings = gen_bitstrings_new(allpix);
-   
+
     // Picking a random 32 byte bitsring from the vector of strings
     int numStrings = bitstrings.size();
     int index = get_random_index(numStrings);
 
-    /* CODE TO TEST RANDOMNESS WILL BREAK OUT LATER*/
+    // Outputting seed into a file
     string seed = bitstrings[index];
     myfile << seed << "\n";
     myfile.close();
-    /*END OF CODE TO TEST RANDOMNESS */
-    
-   return 0;
+    cout << "seed written" << endl;
+    return 0;
+       
 }
+
