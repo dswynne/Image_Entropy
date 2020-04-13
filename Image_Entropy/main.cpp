@@ -34,7 +34,7 @@ int main() {
 
  
     I = detectBadImage(I);
-    if (countNonZero(I) == 0) {
+    if (countNonZero(I) == 0) {       
         //Image is all black and a bad image
         cout << "Bad image provided. Please take a new image with more color diversity\n";
 
