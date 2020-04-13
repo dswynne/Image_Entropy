@@ -40,14 +40,14 @@ int main(int argc, char* argv[]) {
     int rows = I.rows;
     int cols = I.cols;
 
-    int lowerThresh = 20;
-    int upperThresh = 220;
-
-    /*I = detectBadImage(I, lowerThresh, upperThresh);
+ 
+    I = detectBadImage(I);
     if (countNonZero(I) == 0) {
         //Image is all black and a bad image
         cout << "Bad image provided. Please take a new image with more color diversity\n";
-        waitKey();
+
+        //Close file and go to next image
+        myfile.close();
         return 0;
     }*/
     
