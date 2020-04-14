@@ -167,12 +167,20 @@ inline int get_random_index(int numStrings) {
 	double doubleValue = elapsed.count();
 	uint8_t* bytePointer = (uint8_t*)&doubleValue;
 	int factor = 1;
+	uint8_t byte;
+	int totalBitsUsed = 0;
 
+	totalBitsUsed = 0;
 	for (size_t index = 0; index < sizeof(double); index++)
 	{
-		uint8_t byte = bytePointer[index];
-		for (int bit = 0; bit < numBits; bit++)
+		byte = bytePointer[index];
+		for (int bit = 0; bit < 8; bit++)
 		{
+			//Only use the number bits needed to reach N
+			if (totalBitsUsed >= numBits) {
+				break;
+			}
+
 			if (index + byte * factor > N) {
 				//Reached the value just below N
 				break;
@@ -181,9 +189,11 @@ inline int get_random_index(int numStrings) {
 				index += byte * factor;
 				factor *= 2;
 			}
+
+			byte >>= 1;
+			totalBitsUsed++;
 		}
 	}
-	
 	return index;
 }
 
