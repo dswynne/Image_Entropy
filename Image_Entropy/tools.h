@@ -306,10 +306,20 @@ inline int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) 
 	return 1;
 }
 
+//image contains the Mat
+// if invalid, valid = 0;
+struct ImageValidity {
+	cv::Mat image;
+	int valid;
+};
+
 //Detects if image is too monochromatic. Will change image if there is too much of one color above
 //the threshold
-inline cv::Mat detectBadImage(cv::Mat input)
+inline ImageValidity detectBadImage(cv::Mat input)
 {
+
+	struct ImageValidity v;
+	v.valid = 1;
 	cv::Mat output = input;
 	cv::Mat grayInput;
 	double alpha = 0.0;
@@ -326,12 +336,12 @@ inline cv::Mat detectBadImage(cv::Mat input)
 	if (input.dims > 2) {
 		//Image is  RGB and must check all three channels
 		if (!checkRGBImageColors(input, upperThresh, lowerThresh)) {
-			//Make output image all black to signal a bad image
-			output.setTo(cv::Scalar::all(0));
+			v.valid = 0;
 		}
 	}
+	v.image = output;
 
-	return output;
+	return v;
 }
 
 #endif // !Tools

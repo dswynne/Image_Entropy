@@ -40,10 +40,11 @@ int main(int argc, char* argv[]) {
     int rows = I.rows;
     int cols = I.cols;
 
- 
-    I = detectBadImage(I);
-    if (countNonZero(I) == 0) {       
-        //Image is all black and a bad image
+    //Struct I made to work around errors for detection of a bad image
+    struct ImageValidity v;
+    v = detectBadImage(I);
+    I = v.image;
+    if (!v.valid) {       
         cout << "Bad image provided. Please take a new image with more color diversity\n";
 
         //Close file and go to next image
