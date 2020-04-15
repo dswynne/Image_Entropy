@@ -167,12 +167,20 @@ inline int get_random_index(int numStrings) {
 	double doubleValue = elapsed.count();
 	uint8_t* bytePointer = (uint8_t*)&doubleValue;
 	int factor = 1;
+	uint8_t byte;
+	int totalBitsUsed = 0;
 
+	totalBitsUsed = 0;
 	for (size_t index = 0; index < sizeof(double); index++)
 	{
-		uint8_t byte = bytePointer[index];
-		for (int bit = 0; bit < numBits; bit++)
+		byte = bytePointer[index];
+		for (int bit = 0; bit < 8; bit++)
 		{
+			//Only use the number bits needed to reach N
+			if (totalBitsUsed >= numBits) {
+				break;
+			}
+
 			if (index + byte * factor > N) {
 				//Reached the value just below N
 				break;
@@ -181,9 +189,11 @@ inline int get_random_index(int numStrings) {
 				index += byte * factor;
 				factor *= 2;
 			}
+
+			byte >>= 1;
+			totalBitsUsed++;
 		}
 	}
-	
 	return index;
 }
 
@@ -296,10 +306,20 @@ inline int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) 
 	return 1;
 }
 
+//image contains the Mat
+// if invalid, valid = 0;
+struct ImageValidity {
+	cv::Mat image;
+	int valid;
+};
+
 //Detects if image is too monochromatic. Will change image if there is too much of one color above
 //the threshold
-inline cv::Mat detectBadImage(cv::Mat input)
+inline ImageValidity detectBadImage(cv::Mat input)
 {
+
+	struct ImageValidity v;
+	v.valid = 1;
 	cv::Mat output = input;
 	cv::Mat grayInput;
 	double alpha = 0.0;
@@ -316,12 +336,12 @@ inline cv::Mat detectBadImage(cv::Mat input)
 	if (input.dims > 2) {
 		//Image is  RGB and must check all three channels
 		if (!checkRGBImageColors(input, upperThresh, lowerThresh)) {
-			//Make output image all black to signal a bad image
-			output.setTo(cv::Scalar::all(0));
+			v.valid = 0;
 		}
 	}
+	v.image = output;
 
-	return output;
+	return v;
 }
 
 #endif // !Tools
