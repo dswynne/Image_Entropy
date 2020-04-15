@@ -50,6 +50,7 @@ int main()
         for (i = 0; i < filenames.size(); i++) {
             cmd = exec + filenames[i];
             system(cmd.c_str());
+            cout << i << endl;
         }
 
         /*//Vector that holds all of the images in the folder
@@ -73,5 +74,7 @@ int main()
     //Run testing code
     string epsilon = readBinaryDigitsInASCIIFormat();
     Frequency(epsilon);
+    LongestRunOfOnes(epsilon);
+    //Runs(epsilon);
 }
 

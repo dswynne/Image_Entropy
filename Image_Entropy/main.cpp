@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
     // Getting image
     Mat I;
     if (argc < 2) {
-         I = imread("C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\Image_Entropy\\images\\Lena.bmp");
+        I = imread("C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\Image_Entropy\\images\\Lena.bmp");
+        //I = imread("D:\\Pictures\\ENEE408GImages\\wallpapers\\27-u3kAmlA.jpg");
     }
     else {
         I = imread(argv[1]);
@@ -41,7 +42,7 @@ int main(int argc, char* argv[]) {
     int cols = I.cols;
 
  
-    I = detectBadImage(I);
+    /*I = detectBadImage(I);
     if (countNonZero(I) == 0) {       
         //Image is all black and a bad image
         cout << "Bad image provided. Please take a new image with more color diversity\n";
@@ -49,30 +50,37 @@ int main(int argc, char* argv[]) {
         //Close file and go to next image
         myfile.close();
         return 0;
-    }
+    }*/
     
     // For testing filter function. Won't modify main.cpp any more until I finish this
     //Implemented in filter.cpp
     Mat filteredImage = applyFilter(I);
 
     // Divding up the 2D intensity Mat and storing it in a 1D intensity vector 
-    vector<int> allpix = mat_cross(filteredImage);
+    //vector<int> allpix = mat_cross(filteredImage);
+    vector<int> allpix = mat_jump(filteredImage);
 
     // Generating N 32 byte bitstrings from the 1D intensity vector
-    vector<string> bitstrings = gen_bitstrings(allpix);
+    //vector<string> bitstrings = gen_bitstrings(allpix);
+    //vector<string> bitstrings = gen_bitstrings_HL(allpix);
+    vector<string> bitstrings = gen_bitstrings_LSB(allpix);
+    //vector<string> bitstrings = gen_bitstrings_bitshift(allpix);
     
     // Using a Von Neumman Extractor to generate a seed that is closer to truly random
     string seed = vn_extractor(bitstrings);
+    //string seed = xor_extractor(bitstrings);
+    //string seed = vn_extractor_recursive(bitstrings);
     
     /*// Picking a random 32 byte bitsring from the vector of strings
     int numStrings = bitstrings.size();
-    int index = get_random_index(numStrings);
+    //int index = get_random_index(numStrings);
+    Point temp = getPQIndices(numStrings, numStrings);
+    int index = temp.x;
     string seed = bitstrings[index];*/
     
     // Outputting seed into a file
     myfile << seed << "\n";
     myfile.close();
-    cout << "seed written" << endl;
     return 0;
        
 }

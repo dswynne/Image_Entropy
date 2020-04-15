@@ -131,8 +131,8 @@ inline cv::Point getPQIndices(int numPStrings, int numQStrings)
 		}
 	}
 
-	std::cout << "p Index: "<< pIndex << "\n";
-	std::cout << "q Index: " << qIndex << "\n";
+	//std::cout << "p Index: "<< pIndex << "\n";
+	//std::cout << "q Index: " << qIndex << "\n";
 	
 	indices.x = pIndex;
 	indices.y = qIndex;

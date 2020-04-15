@@ -119,14 +119,78 @@ bitstrings gen_bitstrings_old(vector<int> allpix) {
 vector<string> gen_bitstrings(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
-    string btstr;
-
+    string btstr, temp;
     // finding 32 byte bitstrings
     while (i+32 < allpix.size()) {
         bitstrings.push_back("");
         for (k = i; k < i+32; k++) {
             btstr = bitset<8>(allpix[k]).to_string();
-            bitstrings[n].insert(end(bitstrings[n]), begin(btstr), end(btstr));
+            // scrambiling the bits to further randomize the data
+            temp.append(btstr.begin(), btstr.begin() + 2);      // 2^7 & 2^6
+            temp.append(btstr.begin() + 4, btstr.begin() + 6);  // 2^3 & 2^2
+            temp.append(btstr.begin() + 2, btstr.begin() + 4);  // 2^5 & 2^4
+            temp.append(btstr.begin() + 6, btstr.end());        // 2^1 & 2^0
+            //bitstrings[n].insert(end(bitstrings[n]), begin(btstr), end(btstr));
+            bitstrings[n].insert(end(bitstrings[n]), begin(temp), end(temp));
+            temp = "";
+        }
+        i = k + 1;
+        n++;
+    }
+    return bitstrings;
+}
+
+vector<string> gen_bitstrings_HL(vector<int> allpix) {
+    int i = 0, k = 0, n = 0;
+    vector<string> bitstrings;
+    string btstr, temp;
+    // finding 32 byte bitstrings
+    while (i + 256 < allpix.size()) {
+        bitstrings.push_back("");
+        for (k = i; k < i + 256; k++) {
+            if (allpix[k] <= 64 || (allpix[k] > 128 && allpix[k] <=192)) {
+                bitstrings[n].append("0");
+            }
+            else if ((allpix[k] > 64 && allpix[k] <=128) || (allpix[k] > 192)) {
+                bitstrings[n].append("1");
+            }
+        }
+        i = k + 1;
+        n++;
+    }
+    return bitstrings;
+}
+
+vector<string> gen_bitstrings_LSB(vector<int> allpix) {
+    int i = 0, k = 0, n = 0;
+    vector<string> bitstrings;
+    string btstr, temp;
+    // finding 32 byte bitstrings
+    while (i + 256 < allpix.size()) {
+        bitstrings.push_back("");
+        for (k = i; k < i + 256; k++) {
+            bitstrings[n].append(bitset<1>(allpix[k]).to_string());
+        }
+        i = k + 1;
+        n++;
+    }
+    return bitstrings;
+}
+
+vector<string> gen_bitstrings_bitshift(vector<int> allpix) {
+    int i = 0, k = 0, n = 0, m = 7;
+    vector<string> bitstrings;
+    string btstr, temp;
+    // finding 32 byte bitstrings
+    while (i + 256 < allpix.size()) {
+        bitstrings.push_back("");
+        for (k = i; k < i + 256; k++) {
+            btstr = bitset<8>(allpix[k]).to_string();
+            bitstrings[n].push_back(btstr[m]);
+            m--;
+            if (m < 0) {
+                m = 7;
+            }
         }
         i = k + 1;
         n++;
@@ -144,8 +208,11 @@ string vn_extractor(vector<string> bitstrings) {
     int index; 
     int k = 0, i = 0;
     string curstr, seed;
+    cv::Point temp;
     while (k < 256) {
-        index = get_random_index(numStrings);
+        //index = get_random_index(numStrings);
+        temp = getPQIndices(numStrings, numStrings);
+        index = temp.x;
         curstr = bitstrings[index];
         while (i < 256 && k < 256) {
             if (curstr[i] == curstr[i + 1]) {
@@ -160,5 +227,53 @@ string vn_extractor(vector<string> bitstrings) {
         i = 0;
     }
     return seed;
+}
 
+string xor_extractor(vector<string> bitstrings) {
+    int numStrings = bitstrings.size();
+    int index;
+    int k = 0, i = 0;
+    string curstr, seed;
+    cv::Point temp;
+    unsigned char a, b, c;
+    while (k < 256) {
+        //index = get_random_index(numStrings);
+        temp = getPQIndices(numStrings, numStrings);
+        index = temp.x;
+        curstr = bitstrings[index];
+        while (i < 256 && k < 256) {
+            if (curstr[i] == curstr[i + 1]) {
+                seed += '0';
+                k++;
+                i = i + 2;
+            }
+            else if (curstr[i] != curstr[i + 1]) {
+                seed += '1';
+                k++;
+                i = i + 2;
+            }
+        }
+        i = 0;
+    }
+    return seed;
+}
+
+string vn_extractor_recursive(vector<string> bitstrings) {
+    int k = 0, i = 0;
+    string curstr, seed;
+    while (k < 256) {
+        curstr = vn_extractor(bitstrings);
+        while (i < 256 && k < 256) {
+            if (curstr[i] == curstr[i + 1]) {
+                i = i + 2;
+            }
+            else if (curstr[i] != curstr[i + 1]) {
+                seed += curstr[i];
+                k++;
+                i = i + 2;
+            }
+        }
+        i = 0;
+    }
+    return seed;
 }
