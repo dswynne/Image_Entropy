@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 /* Developer Created Libraries*/
-#include "main.h"
+#include "extractor.h"
 #include "tools.h"
 
 using namespace std;

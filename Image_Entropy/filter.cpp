@@ -11,7 +11,7 @@
 #include <opencv2/imgproc.hpp>
 
 /* Developer Created Libraries*/
-#include "main.h"
+#include "filter.h"
 
 using namespace cv;
 using namespace std;
