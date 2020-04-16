@@ -24,8 +24,7 @@
 #include "utilities.h"*/
 /* Developer Created Libraries*/
 #include "nist_sts_tests.h"
-//#include "../Image_Entropy/main.h"
-//#include "../Image_Entropy/tools.h"
+
 
 using namespace cv;
 using namespace std;
@@ -75,6 +74,6 @@ int main()
     string epsilon = readBinaryDigitsInASCIIFormat();
     Frequency(epsilon);
     LongestRunOfOnes(epsilon);
-    //Runs(epsilon);
+    Runs(epsilon);
 }
 

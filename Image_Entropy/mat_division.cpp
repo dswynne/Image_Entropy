@@ -15,12 +15,30 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 /* Developer Created Libraries*/
-#include "main.h"
+#include "mat_divisions.h"
 
 using namespace std;
 using namespace cv;
 
-/* This function is called by all implementations of matrix dividing. 
+/* This function takes the BGR channels and XOR's them to create a one channel 2D matrix
+*/
+vector<vector<int>> channel_blender(Mat B,Mat G, Mat R){
+    const int rows = B.rows;
+    const int cols = B.cols;
+    vector<vector<int>> Ib;
+    int i, j;
+
+    for (i = 0; i < rows; i++) {
+        vector<int> row(cols);
+        for (j = 0; j < cols; j++) {
+            row[j] = int(B.at<uchar>(i, j) ^ G.at<uchar>(i, j) ^ R.at<uchar>(i, j));
+        }
+        Ib.push_back(row);
+    }
+    return Ib;
+}
+
+/* This function is called by all implementations of matrix dividing.
    It simply takes a rectangular matrix and makes it a square matrix.
    This helps with simplifyinhg logic in the matrix diving functions
    as well as further altering the initial input image.
@@ -70,6 +88,58 @@ vector<vector<int>> make_square(Mat intensity_mat) {
         return intensity_sq;
     }
         
+}
+
+/* This function is called by all implementations of matrix dividing.
+   It simply takes a rectangular matrix and makes it a square matrix.
+   This helps with simplifyinhg logic in the matrix diving functions
+   as well as further altering the initial input image.
+*/
+vector<vector<int>> make_square_new(vector<vector<int>> intensity_mat) {
+    int i, j;
+    const int rows = intensity_mat.size();
+    const int cols = intensity_mat[0].size();
+    int reshapeFactor;
+
+    if (rows == cols) { // already a square
+        vector<vector<int>> intensity_sq;
+
+        for (i = 0; i < rows; i++) {
+            vector<int> row(rows);
+            for (j = 0; j < cols; j++) {
+                row[j] = intensity_mat[i][j];
+            }
+            intensity_sq.push_back(row);
+        }
+        return intensity_sq;
+    }
+    else if (rows > cols) { // portrait photo
+        reshapeFactor = floor((rows - cols) / 2);
+        vector<vector<int>> intensity_sq;
+
+        for (i = 0; i < cols + reshapeFactor; i++) {
+            vector<int> row(cols + reshapeFactor);
+            for (j = 0; j < cols + reshapeFactor; j++) {
+                row[j] = intensity_mat[i][j];
+            }
+            intensity_sq.push_back(row);
+        }
+        return intensity_sq;
+    }
+    else if (rows < cols) { // landscape photo
+        reshapeFactor = floor((rows - cols) / 2);
+        vector<vector<int>> intensity_sq;
+
+        for (i = 0; i < rows + reshapeFactor; i++) {
+            vector<int> row(rows + reshapeFactor);
+            for (j = 0; j < rows + reshapeFactor; j++) {
+                row[j] = intensity_mat[i][j];
+            }
+            intensity_sq.push_back(row);
+        }
+        return intensity_sq;
+    }
+
 }
 
 /* This implementation horizontally weaves through the 2D matrix row by row ergo the name snake. 
@@ -192,9 +262,10 @@ vector<int> mat_cross(Mat intensity_mat) {
    - The top half is anything before the diagonal going from the bottom left corner to the bottom right corner.
    - The bot half is anything after the diagonal described above
 */
-vector<int> mat_jump(Mat intensity_mat) {
+//vector<int> mat_jump(Mat intensity_mat) {
+vector<int> mat_jump(vector<vector<int>> intensity_mat) {
     // converting matrix to square matrix
-    vector<vector<int>> intensity_sq = make_square(intensity_mat);
+    vector<vector<int>> intensity_sq = make_square_new(intensity_mat);
     // intializing values
     int i = 0, j = 0, k = 0;
     int rows = intensity_sq.size();

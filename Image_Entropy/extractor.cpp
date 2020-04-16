@@ -1,0 +1,107 @@
+/* Standard Libraries: */
+#include <iostream>
+#include <string> 
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+/* Developer Created Libraries*/
+#include "main.h"
+#include "tools.h"
+
+using namespace std;
+
+/* This function takes a random bitstring that was generated in gen_bitstrings() and stores it into the final seed.
+   The process to store bits in this seed is called a Von Neumman Extractor.
+   If two successive bits match, no output is fed into the seed.
+   If the bits differ, the value of the first bit is fed into the seed.
+*/
+string vn_extractor(vector<string> bitstrings) {
+    int numStrings = bitstrings.size();
+    int index;
+    int k = 0, i = 0;
+    string curstr, seed;
+    cv::Point temp;
+    while (k < 256) {
+        //index = get_random_index(numStrings);
+        temp = getPQIndices(numStrings, numStrings);
+        index = temp.x;
+        curstr = bitstrings[index];
+        while (i < 256 && k < 256) {
+            if (curstr[i] == curstr[i + 1]) {
+                i = i + 2;
+            }
+            else if (curstr[i] != curstr[i + 1]) {
+                seed += curstr[i];
+                k++;
+                i = i + 2;
+            }
+        }
+        i = 0;
+    }
+    return seed;
+}
+
+string xor_extractor(vector<string> bitstrings) {
+    int numStrings = bitstrings.size();
+    int index;
+    int k = 0, i = 0;
+    string curstr, seed;
+    cv::Point temp;
+    unsigned char a, b, c;
+    while (k < 256) {
+        //index = get_random_index(numStrings);
+        temp = getPQIndices(numStrings, numStrings);
+        index = temp.x;
+        curstr = bitstrings[index];
+        while (i < 256 && k < 256) {
+            if (curstr[i] == curstr[i + 1]) {
+                seed += '0';
+                k++;
+                i = i + 2;
+            }
+            else if (curstr[i] != curstr[i + 1]) {
+                seed += '1';
+                k++;
+                i = i + 2;
+            }
+        }
+        i = 0;
+    }
+    return seed;
+}
+
+string vn_extractor_recursive(vector<string> bitstrings) {
+    int k = 0, i = 0;
+    string curstr, seed;
+    while (k < 256) {
+        curstr = vn_extractor(bitstrings);
+        while (i < 256 && k < 256) {
+            if (curstr[i] == curstr[i + 1]) {
+                i = i + 2;
+            }
+            else if (curstr[i] != curstr[i + 1]) {
+                seed += curstr[i];
+                k++;
+                i = i + 2;
+            }
+        }
+        i = 0;
+    }
+    return seed;
+}
+
+string extractor_blender(string seedVN, string seedXOR) {
+    int k = 0, i = 0;
+    string seed;
+    while (k < 256) {
+        if (seedVN[k] == seedXOR[k]) {
+            seed += '0';
+            k++;
+        }
+        else if (seedVN[k] != seedXOR[k]) {
+            seed += '1';
+            k++;
+        }
+    }
+    return seed;
+}

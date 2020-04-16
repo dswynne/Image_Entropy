@@ -197,7 +197,7 @@ void LongestRunOfOnes(string epsilon)
 
 	S = 0;
 	for (k = 0; k < n; k++)
-		if (epsilon[k])
+		if (epsilon[k] == '1')
 			S++;
 	pi = (double)S / (double)n;
 

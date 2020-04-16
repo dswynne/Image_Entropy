@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <bitset>
 /* Developer Created Libraries*/
-#include "main.h"
+#include "gen_bitstrings.h"
 #include "tools.h"
 
 using namespace std;
@@ -114,9 +114,10 @@ bitstrings gen_bitstrings_old(vector<int> allpix) {
 }
 
 /* This function takes the 1D intensity array and converts each value to its 8 bit binary representation.
+   It then scrambles the binary value.
    These binary values are then appended into bitstrings 256 bits long each.
 */
-vector<string> gen_bitstrings(vector<int> allpix) {
+vector<string> gen_bitstrings_whole_pixel(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
     string btstr, temp;
@@ -140,6 +141,11 @@ vector<string> gen_bitstrings(vector<int> allpix) {
     return bitstrings;
 }
 
+/* This function takes the 1D intensity array and outputs...
+        - 1 if the intensity value is between 65 & 128 or 193 & 255
+        - 0 if the intensity value is between 0 & 64 or 129 & 192
+   These binary values are then appended into bitstrings 256 bits long each.
+*/
 vector<string> gen_bitstrings_HL(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
@@ -161,6 +167,10 @@ vector<string> gen_bitstrings_HL(vector<int> allpix) {
     return bitstrings;
 }
 
+/* This function takes the 1D intensity array and converts each value to its 8 bit binary representation.
+   It only takes the LSB of this 8 bit output.
+   These binary values are then appended into bitstrings 256 bits long each.
+*/
 vector<string> gen_bitstrings_LSB(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
@@ -177,6 +187,10 @@ vector<string> gen_bitstrings_LSB(vector<int> allpix) {
     return bitstrings;
 }
 
+/* This function takes the 1D intensity array and converts each value to its 8 bit binary representation.
+   It then takes one bit from the 8 bit value. 
+   These binary values are then appended into bitstrings 256 bits long each.
+*/
 vector<string> gen_bitstrings_bitshift(vector<int> allpix) {
     int i = 0, k = 0, n = 0, m = 7;
     vector<string> bitstrings;
@@ -198,82 +212,3 @@ vector<string> gen_bitstrings_bitshift(vector<int> allpix) {
     return bitstrings;
 }
 
-/* This function takes a random bitstring that was generated in gen_bitstrings() and stores it into the final seed.
-   The process to store bits in this seed is called a Von Neumman Extractor.
-   If two successive bits match, no output is fed into the seed. 
-   If the bits differ, the value of the first bit is fed into the seed.
-*/
-string vn_extractor(vector<string> bitstrings) {
-    int numStrings = bitstrings.size();
-    int index; 
-    int k = 0, i = 0;
-    string curstr, seed;
-    cv::Point temp;
-    while (k < 256) {
-        //index = get_random_index(numStrings);
-        temp = getPQIndices(numStrings, numStrings);
-        index = temp.x;
-        curstr = bitstrings[index];
-        while (i < 256 && k < 256) {
-            if (curstr[i] == curstr[i + 1]) {
-                i = i + 2;
-            }
-            else if (curstr[i] != curstr[i + 1]) {
-                seed += curstr[i];
-                k++;
-                i = i + 2;
-            }
-        }
-        i = 0;
-    }
-    return seed;
-}
-
-string xor_extractor(vector<string> bitstrings) {
-    int numStrings = bitstrings.size();
-    int index;
-    int k = 0, i = 0;
-    string curstr, seed;
-    cv::Point temp;
-    unsigned char a, b, c;
-    while (k < 256) {
-        //index = get_random_index(numStrings);
-        temp = getPQIndices(numStrings, numStrings);
-        index = temp.x;
-        curstr = bitstrings[index];
-        while (i < 256 && k < 256) {
-            if (curstr[i] == curstr[i + 1]) {
-                seed += '0';
-                k++;
-                i = i + 2;
-            }
-            else if (curstr[i] != curstr[i + 1]) {
-                seed += '1';
-                k++;
-                i = i + 2;
-            }
-        }
-        i = 0;
-    }
-    return seed;
-}
-
-string vn_extractor_recursive(vector<string> bitstrings) {
-    int k = 0, i = 0;
-    string curstr, seed;
-    while (k < 256) {
-        curstr = vn_extractor(bitstrings);
-        while (i < 256 && k < 256) {
-            if (curstr[i] == curstr[i + 1]) {
-                i = i + 2;
-            }
-            else if (curstr[i] != curstr[i + 1]) {
-                seed += curstr[i];
-                k++;
-                i = i + 2;
-            }
-        }
-        i = 0;
-    }
-    return seed;
-}

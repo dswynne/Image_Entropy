@@ -156,13 +156,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="extractor.cpp" />
     <ClCompile Include="filter.cpp" />
     <ClCompile Include="gen_bitstrings.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mat_division.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h" />
+    <ClInclude Include="extractor.h" />
+    <ClInclude Include="filter.h" />
+    <ClInclude Include="gen_bitstrings.h" />
+    <ClInclude Include="mat_divisions.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <ItemGroup>
