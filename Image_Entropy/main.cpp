@@ -14,9 +14,12 @@
 #include <direct.h>
 /* External Libraries: */
 // OpenCV
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
 // MPIR
 #include <mpirxx.h>
 /* Developer Created Libraries*/
@@ -36,11 +39,12 @@ int main(int argc, char* argv[]) {
     Mat I; 
     if (argc < 2) {
         //I = imread("C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\Image_Entropy\\images\\Lena.bmp");
-        I = imread("D:\\Pictures\\ENEE408GImages\\wallpapers\\27-u3kAmlA.jpg");
+        I = imread("D:\\Pictures\\ENEE408GImages\\wallpapers\\27-u3kAmlA.jpg", IMREAD_COLOR);
     }
     else {
         I = imread(argv[1]);
     }
+
 
     //int rows = I.rows;
     //int cols = I.cols;
@@ -60,16 +64,11 @@ int main(int argc, char* argv[]) {
     //// For testing filter function. Won't modify main.cpp any more until I finish this
     ////Implemented in filter.cpp
     //Mat filteredImage = applyFilter(I);
+    array<Mat, 3> filteredI = applyFilter_BGR(I);
     
     // Taking the BGR channels and XORing them for each pixel
-    Mat bgrI[3];
-    split(I, bgrI);
-    Mat B = bgrI[0];
-    Mat G = bgrI[1];
-    Mat R = bgrI[2];
-    vector<vector<int>> Ib = channel_blender(B,G,R);
-    
-    
+    vector<vector<int>> Ib = channel_blender(filteredI);
+        
     // Divding up the 2D intensity Mat and storing it in a 1D intensity vector 
     //vector<int> allpix = mat_cross(filteredImage);
     //vector<int> allpix = mat_jump(filteredImage);

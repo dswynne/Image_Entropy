@@ -75,5 +75,6 @@ int main()
     Frequency(epsilon);
     LongestRunOfOnes(epsilon);
     Runs(epsilon);
+    BlockFrequency(epsilon);
 }
 

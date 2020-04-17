@@ -236,3 +236,47 @@ void LongestRunOfOnes(string epsilon)
 
 	printf("%f\n", p_value);// fflush(results[TEST_RUNS]);
 }
+
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+							BLOCK FREQUENCY TEST
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+ void BlockFrequency(string epsilon) {
+	 int		i, j, N, blockSum;
+	 double	p_value, sum, pi, v, chi_squared;
+	 
+	 int n = epsilon.size();
+	 int M = (.01*n)+1;
+
+
+	 N = n / M; 		/* # OF SUBSTRING BLOCKS      */
+	 sum = 0.0;
+
+	 int intValue;
+	 for (i = 0; i < N; i++) {
+		 blockSum = 0;
+		 for (j = 0; j < M; j++) {
+			 intValue = epsilon[j + i * M] - '0';
+			 blockSum += intValue;
+		 }
+
+		 pi = (double)blockSum / (double)M;
+		 cout << blockSum << endl;
+		 v = pi - 0.5;
+		 sum += v * v;
+	 }
+	 chi_squared = 4.0 * M * sum;
+	 p_value = cephes_igamc(N / 2.0, chi_squared / 2.0);
+
+	 printf("\t\t\tBLOCK FREQUENCY TEST\n");
+	 printf("\t\t---------------------------------------------\n");
+	 printf("\t\tCOMPUTATIONAL INFORMATION:\n");
+	 printf("\t\t---------------------------------------------\n");
+	 printf("\t\t(a) Chi^2           = %f\n", chi_squared);
+	 printf("\t\t(b) # of substrings = %d\n", N);
+	 printf("\t\t(c) block length    = %d\n", M);
+	 printf("\t\t(d) Note: %d bits were discarded.\n", n % M);
+	 printf("\t\t---------------------------------------------\n");
+
+	 printf("%s\t\tp_value = %f\n\n", p_value < ALPHA ? "FAILURE" : "SUCCESS", p_value); //fflush(stats[TEST_BLOCK_FREQUENCY]);
+	 printf("%f\n", p_value); //fflush(results[TEST_BLOCK_FREQUENCY]);
+ }

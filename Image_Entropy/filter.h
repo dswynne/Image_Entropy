@@ -6,3 +6,4 @@
 
 
 cv::Mat applyFilter(cv::Mat input);
+std::array<cv::Mat, 3> applyFilter_BGR(cv::Mat I);

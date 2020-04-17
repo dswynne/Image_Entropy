@@ -22,7 +22,10 @@ using namespace cv;
 
 /* This function takes the BGR channels and XOR's them to create a one channel 2D matrix
 */
-vector<vector<int>> channel_blender(Mat B,Mat G, Mat R){
+vector<vector<int>> channel_blender(array<Mat, 3> filteredI){
+    Mat B = filteredI[0];
+    Mat G = filteredI[1];
+    Mat R = filteredI[2];
     const int rows = B.rows;
     const int cols = B.cols;
     vector<vector<int>> Ib;
