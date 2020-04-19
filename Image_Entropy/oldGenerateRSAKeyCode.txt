@@ -1,0 +1,34 @@
+// OpenSSL
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <iostream>
+#include <stdlib.h>
+
+const int kBits = 1024;
+const int kExp = 3;
+
+int keylen;
+char* pem_key;
+BIGNUM* e = 0;	//This is the prime number that we pass in 
+BN_GENCB* cb = 0;
+RSA* rsa;
+
+//Key should now be stored in rsa
+int retval = RSA_generate_key_ex(rsa, kBits, e, cb);
+
+
+/* To get the C-string PEM form: */
+BIO* bio = BIO_new(BIO_s_mem());
+PEM_write_bio_RSAPrivateKey(bio, rsa, NULL, NULL, 0, NULL, NULL);
+
+keylen = BIO_pending(bio);
+pem_key = calloc(keylen + 1, 1); /* Null-terminate */
+BIO_read(bio, pem_key, keylen);
+
+std::cout << "Pem_key: " << pem_key << "\n";
+
+BIO_free_all(bio);
+RSA_free(rsa);
+free(pem_key);

@@ -30,6 +30,9 @@
     <ClCompile Include="extractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="generateRSAKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tools.h">
@@ -50,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="old_main_code.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="oldGenerateRSAKeyCode.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
