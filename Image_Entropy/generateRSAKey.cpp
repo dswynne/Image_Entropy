@@ -6,6 +6,7 @@ using std::unique_ptr;
 #include <openssl/pem.h>
 #include <openssl/bio.h>
 #include <openssl/x509.h>
+#include <openssl/rand.h>
 
 #include <cassert>
 #define ASSERT assert
@@ -46,8 +47,7 @@ void generateRSAKey(){
 
     //bn.get() is the seed and should be replaced with our number that we want to use to seed the RSA key
 
-
-    // Generate key
+    // Generate RSA key
     rc = RSA_generate_key_ex(rsa.get(), 2048, bn.get(), NULL);
     ASSERT(rc == 1);
 
@@ -89,4 +89,24 @@ void generateRSAKey(){
     ASSERT(rc == 1);
 
     return;
+}
+
+void generateAESKey() {
+
+    unsigned char key[16], iv[16];
+
+    //Seed random generation with our own value
+    //Could use a 16 or 32 bits from our random number to be used here
+    unsigned int num;
+    //RAND_seed(const void *buf, int num)
+
+    if (!RAND_bytes(key, sizeof key)) {
+        /* OpenSSL reports a failure, act accordingly */
+    }
+    if (!RAND_bytes(iv, sizeof iv)) {
+        /* OpenSSL reports a failure, act accordingly */
+    }
+
+
+
 }
