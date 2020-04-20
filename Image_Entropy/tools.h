@@ -310,7 +310,7 @@ inline int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) 
 // if invalid, valid = 0;
 struct ImageValidity {
 	cv::Mat image;
-	int valid;
+	int valid = 0;
 };
 
 //Detects if image is too monochromatic. Will change image if there is too much of one color above
@@ -321,7 +321,6 @@ inline ImageValidity detectBadImage(cv::Mat input)
 	struct ImageValidity v;
 	v.valid = 1;
 	cv::Mat output = input;
-	cv::Mat grayInput;
 	double alpha = 0.0;
 	double beta = 0;
 	int lowerThresh = 20;
@@ -331,9 +330,20 @@ inline ImageValidity detectBadImage(cv::Mat input)
 	cv::Point2f values = autoAdjustImage(input, 0.25);
 	alpha = (double)values.x;
 	beta = (double)values.y;
-	convertScaleAbs(input, output, alpha, beta);
 
-	if (input.dims > 2) {
+	// Apply alpha and beta to get new image
+	//convertScaleAbs(input, output, alpha, beta);
+	for (int y = 0; y < input.rows; y++) {
+		for (int x = 0; x < input.cols; x++) {
+			for (int c = 0; c < input.channels(); c++) {
+				output.at<cv::Vec3b>(y, x)[c] =
+					cv::saturate_cast<uchar>(alpha * input.at<cv::Vec3b>(y, x)[c] + beta);
+			}
+		}
+	}
+
+	//Now check RGB image after adjustment to see if any colors are too strong
+	if (output.channels() > 2) {
 		//Image is  RGB and must check all three channels
 		if (!checkRGBImageColors(input, upperThresh, lowerThresh)) {
 			v.valid = 0;
