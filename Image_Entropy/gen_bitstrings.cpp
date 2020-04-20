@@ -1,7 +1,6 @@
 /* gen_bitstrings.cpp:
-   Takes the 1D intensity vector and alternates between storing 512 long bit strings in p&q.
-   Outputting bit strings are stored in a struct of vectors.
-   Each struct vector is N long depending on the size of the image.
+   All the functions in this file take a 1D intensity vector and convert it into 512 long bitstrings.
+   Each function uses a different amount of bits from each pixel of the intensity vector. 
 */
 
 /* Standard Libraries: */
@@ -16,102 +15,6 @@
 #include "tools.h"
 
 using namespace std;
-
-/* THIS IS AN OBSOLETE FUNCTION AND WILL BE REMOVED SOON */
-/* This function takes the 1D intensity array and generates strigns of decimals 512 long for p&q */
-bitstrings gen_bitstrings_old(vector<int> allpix) {
-    // intializing values
-    bitstrings bitstrings;
-    string pixel;
-    int i = 0, k = 0, flag = 0, ovr;
-
-    // finding arrays of p&q's
-    while (i < allpix.size()) {
-        // checking if p[k] needs to be initialized or not
-        if (flag == 1) {
-            bitstrings.p.push_back("");
-            if (ovr - 1 == 0) { // 1 extra value
-                bitstrings.p[k].insert(end(bitstrings.p[k]), pixel[pixel.size() - 1]);
-            }
-            else { // 2 extra values
-                bitstrings.p[k].insert(end(bitstrings.p[k]), end(pixel) - ovr + 1, end(pixel));
-            }
-            flag = 0;
-        }
-        else if (flag == 0) {
-            bitstrings.p.push_back(to_string(allpix[i]));
-            i++;
-        }
-        // storing a p in a bitstring
-        while (bitstrings.p[k].size() < 512) {
-            // preventing indexing outside of allpix
-            if (i > allpix.size() - 1) {
-                break;
-            }
-            // converting current pixel to string
-            pixel = to_string(allpix[i]);
-            // if the current pixel will make p[k] longer than 512 take the
-            // overage and put it into q[k]
-            if ((bitstrings.p[k].size() + pixel.size()) > 512) {
-                ovr = (bitstrings.p[k].size() + pixel.size()) - 512;
-                bitstrings.p[k].insert(end(bitstrings.p[k]), begin(pixel), end(pixel) - ovr);
-                flag = 1;
-                i++;
-            }
-            else {
-                bitstrings.p[k].insert(end(bitstrings.p[k]), begin(pixel), end(pixel));
-                i++;
-            }
-        }
-
-        // preventing indexing outside of allpix
-        if (i > allpix.size() - 1) {
-            break;
-        }
-
-        // checking if q[k] needs to be initialized or not
-        if (flag == 1) {
-            bitstrings.q.push_back("");
-            if (ovr - 1 == 0) { // 1 extra value
-                bitstrings.q[k].insert(end(bitstrings.q[k]), pixel[pixel.size() - 1]);
-            }
-            else { // 2 extra values
-                bitstrings.q[k].insert(end(bitstrings.q[k]),end(pixel) - ovr + 1, end(pixel));
-            }
-            flag = 0;
-        }
-        else if (flag == 0) {
-            bitstrings.q.push_back(to_string(allpix[i]));
-            i++;
-        }
-        // storing a q in a bitstring
-        while (bitstrings.q[k].size() < 512) {
-            // preventing indexing outside of allpix
-            if (i > allpix.size() - 1) {
-                break;
-            }
-            // converting current pixel to string
-            pixel = to_string(allpix[i]);
-            // if the current pixel will make q[k] longer than 512 take the
-            // overage and put it into the next p[k]
-            if ((bitstrings.q[k].size() + pixel.size()) > 512) {
-                ovr = (bitstrings.q[k].size() + pixel.size()) - 512;
-                bitstrings.q[k].insert(end(bitstrings.q[k]), begin(pixel), end(pixel) - ovr);
-                flag = 1;
-                i++;
-            }
-            else {
-                bitstrings.q[k].insert(end(bitstrings.q[k]), begin(pixel), end(pixel));
-                i++;
-            }
-        }
-        k++;
-    }
-    // Throwing away bit strings that aren't 512 long
-    bitstrings.p.erase(bitstrings.p.begin() + k - 1);
-    bitstrings.q.erase(bitstrings.q.begin() + k - 1);
-    return bitstrings;
-}
 
 /* This function takes the 1D intensity array and converts each value to its 8 bit binary representation.
    It then scrambles the binary value.
@@ -149,7 +52,7 @@ vector<string> gen_bitstrings_whole_pixel(vector<int> allpix) {
 vector<string> gen_bitstrings_HL(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
-    string btstr, temp;
+    string btstr;
     // finding 32 byte bitstrings
     while (i + 256 < allpix.size()) {
         bitstrings.push_back("");
@@ -174,7 +77,7 @@ vector<string> gen_bitstrings_HL(vector<int> allpix) {
 vector<string> gen_bitstrings_LSB(vector<int> allpix) {
     int i = 0, k = 0, n = 0;
     vector<string> bitstrings;
-    string btstr, temp;
+    string btstr;
     // finding 32 byte bitstrings
     while (i + 256 < allpix.size()) {
         bitstrings.push_back("");
@@ -194,7 +97,7 @@ vector<string> gen_bitstrings_LSB(vector<int> allpix) {
 vector<string> gen_bitstrings_bitshift(vector<int> allpix) {
     int i = 0, k = 0, n = 0, m = 7;
     vector<string> bitstrings;
-    string btstr, temp;
+    string btstr;
     // finding 32 byte bitstrings
     while (i + 256 < allpix.size()) {
         bitstrings.push_back("");

@@ -1,3 +1,7 @@
+/* filter.cpp:
+	Functions that deal with filtering the input image.
+*/
+
 /* Standard Libraries: */
 #include <iostream>
 #include <string> 
@@ -6,11 +10,10 @@
 #include <stdlib.h>
 /* External Libraries: */
 // OpenCV
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
-
+#include <opencv2/highgui.hpp>
 /* Developer Created Libraries*/
 #include "filter.h"
 
@@ -40,12 +43,10 @@ Mat applyFilter(Mat input) {
 
 		}
 	}
-
-	//imshow("After filter", grayInput);
-
 	return grayInput;
 }
 
+/* This function applies a Salt & Pepper Noise filter on all three RGB color channels */
 array<Mat, 3>  applyFilter_BGR(Mat I) {
 	Mat bgrI[3];
 	split(I, bgrI);
@@ -75,4 +76,24 @@ array<Mat, 3>  applyFilter_BGR(Mat I) {
 	spBGR[2] = spR;
 
 	return spBGR;
+}
+
+/* This function takes the BGR channels and XOR's them to create a one channel 2D matrix */
+vector<vector<int>> channel_blender(array<Mat, 3> filteredI) {
+	Mat B = filteredI[0];
+	Mat G = filteredI[1];
+	Mat R = filteredI[2];
+	const int rows = B.rows;
+	const int cols = B.cols;
+	vector<vector<int>> Ib;
+	int i, j;
+
+	for (i = 0; i < rows; i++) {
+		vector<int> row(cols);
+		for (j = 0; j < cols; j++) {
+			row[j] = int(B.at<uchar>(i, j) ^ G.at<uchar>(i, j) ^ R.at<uchar>(i, j));
+		}
+		Ib.push_back(row);
+	}
+	return Ib;
 }

@@ -74,8 +74,8 @@
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(MPIR_X86_DIR);$(MPFR_X86_DIR)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\opencv\build\include;$(IncludePath);C:\mpir-vs2019\mpir</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc15\lib;$(LibraryPath);C:\mpir-vs2019\mpir\lib\x64\Debug</LibraryPath>
+    <IncludePath>C:\opencv\build\include;$(IncludePath);</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc15\lib;$(LibraryPath);</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -84,8 +84,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\mpir-vs2019\mpir;C:\opencv\build\include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\mpir-vs2019\mpir\lib\x64\Release;C:\opencv\build\x64\vc15\lib</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\opencv\build\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\opencv\build\x64\vc15\lib;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>mpir.lib;mpirxx.lib;opencv_world420d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world420d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -152,21 +152,25 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>mpir.lib;mpirxx.lib;opencv_world420.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world420.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="extractor.cpp" />
     <ClCompile Include="filter.cpp" />
     <ClCompile Include="gen_bitstrings.cpp" />
+    <ClCompile Include="hash2seed.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mat_division.cpp" />
+    <ClCompile Include="sha256.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extractor.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="gen_bitstrings.h" />
+    <ClInclude Include="hash2seed.h" />
     <ClInclude Include="mat_divisions.h" />
+    <ClInclude Include="sha256.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <ItemGroup>
