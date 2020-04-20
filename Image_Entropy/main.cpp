@@ -54,21 +54,21 @@ int main(int argc, char* argv[]) {
     }
 
 
-    //int rows = I.rows;
-    //int cols = I.cols;
+    int rows = I.rows;
+    int cols = I.cols;
 
-    ////Struct I made to work around errors for detection of a bad image
-    //struct ImageValidity v;
-    //v = detectBadImage(I);
-    //I = v.image;
-    //if (!v.valid) {       
-    //    cout << "Bad image provided. Please take a new image with more color diversity\n";
+    //Struct I made to work around errors for detection of a bad image
+    struct ImageValidity v;
+    v = detectBadImage(I);
+    I = v.image;
+    if (!v.valid) {       
+        cout << "Bad image provided. Please take a new image with more color diversity\n";
 
-    //    //Close file and go to next image
-    //    myfile.close();
-    //    return 0;
-    //}
-    //
+        //Close file and go to next image
+        myfile.close();
+        return 0;
+    }
+    
     
     // Applying noise filter to the image
     array<Mat, 3> filteredI = applyFilter_BGR(I);

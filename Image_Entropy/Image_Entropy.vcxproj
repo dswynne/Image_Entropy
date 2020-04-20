@@ -74,8 +74,8 @@
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(MPIR_X86_DIR);$(MPFR_X86_DIR)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\opencv\build\include;$(IncludePath);</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc15\lib;$(LibraryPath);</LibraryPath>
+    <IncludePath>C:\openssl\include64;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\mpir-vs2019\mpir;C:\opencv\build\include</IncludePath>
+    <LibraryPath>C:\openssl\lib64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\mpir-vs2019\mpir\lib\x64\Debug;C:\opencv\build\x64\vc15\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -112,7 +112,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>mpir.lib;mpirxx.lib;opencv_world420d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mpir.lib;mpirxx.lib;opencv_world420d.lib;ws2_32.lib;libsslMT.lib;Crypt32.lib;libcryptoMT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
