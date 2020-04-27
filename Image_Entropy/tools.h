@@ -198,60 +198,62 @@ inline int get_random_index(int numStrings) {
 }
 
 //Finds alpha and beta to correct grayscale image
-inline cv::Point2f autoAdjustImage(cv::Mat input, float clipHistPercent)
+inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 {
 	cv::Point2f output;
-	int histSize = 256;
+	int histogramLength = 256;
 	float alpha, beta;
 	double minGray = 0, maxGray = 0;
+	cv::Mat hist; //the grayscale histogram
 
 	//to calculate grayscale histogram
 	cv::Mat gray;
-	if (input.type() == CV_8UC1) 
+	if (input.type() == CV_8UC1) {
 		gray = input;
-	else if (input.type() == CV_8UC3) 
+	}
+	else {
 		cvtColor(input, gray, cv::COLOR_BGR2GRAY);
-	else if (input.type() == CV_8UC4) 
-		cvtColor(input, gray, cv::COLOR_BGR2GRAY);
+	}
 
-	if (clipHistPercent == 0)
+	//If you don't want to cut off a certain percentage of the ends
+	if (histogramPercent == 0)
 	{
 		// keep full available range
 		cv::minMaxLoc(gray, &minGray, &maxGray);
 	}
 	else
 	{
-		cv::Mat hist; //the grayscale histogram
-
 		float range[] = { 0, 256 };
 		const float* histRange = { range };
-		bool uniform = true;
-		bool accumulate = false;
-		calcHist(&gray, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+		
+		//Get historgram of intensity values of input image
+		calcHist(&gray, 1, 0, cv::Mat(), hist, 1, &histogramLength, &histRange, true, false);
 
 		// calculate cumulative distribution from the histogram
-		std::vector<float> accumulator(histSize);
+		std::vector<float> accumulator(histogramLength);
 		accumulator[0] = hist.at<float>(0);
-		for (int i = 1; i < histSize; i++)
+		for (int i = 1; i < histogramLength; i++)
 		{
 			accumulator[i] = accumulator[i-1] + hist.at<float>(i);
 		}
 
-		// locate points that cuts at required value
+		// Get max value from last element in accumulator vector
 		float max = accumulator.back();
-		clipHistPercent *= (max / 100.0); //make percent as absolute
-		clipHistPercent /= 2.0; // left and right wings
-		// locate left cut
+		histogramPercent *= (max / 100.0); //make percent cut off relative to max value of histogram
+		histogramPercent /= 2.0; // divide by 2 as there are left and right sides to distribution
+
+		//Start minGray at the far left and increment until you reach the cutoff on left side
 		minGray = 0;
-		while (accumulator[minGray] < clipHistPercent)
+		while (accumulator[minGray] <= histogramPercent)
 			minGray++;
 
-		// locate right cut
-		maxGray = histSize - 1;
-		while (accumulator[maxGray] >= (max - clipHistPercent))
+		//Start maxGray at the far right and decrement until you reach the cutoff on left side
+		maxGray = histogramLength - 1;
+		while (accumulator[maxGray] >= (max - histogramPercent))
 			maxGray--;
 	}
 
+	//Calculate alpha and beta to modify each pixel in original image
 	alpha = 255 / (maxGray - minGray);
 	beta = -minGray * alpha;
 
