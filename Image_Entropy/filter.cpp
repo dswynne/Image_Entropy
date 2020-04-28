@@ -29,10 +29,6 @@ Mat applyFilter(Mat input) {
 	int randRowIndex = rows - 1;
 	int randColIndex = cols - 1;
 
-	//If not grayscale, convert to grayscale
-	//if (input.dims > 2) {
-	//	cvtColor(input, grayInput, COLOR_BGR2GRAY);
-	//}
 	//Get a value from grayscale image to use for "random" filter
 	Vec3b randVal = rgbInput.at<cv::Vec3b>(randRowIndex, randColIndex);
 

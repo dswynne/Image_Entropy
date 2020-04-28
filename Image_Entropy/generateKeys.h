@@ -3,8 +3,6 @@
 Contains functions for RSA key generation and AES key generation
 -------------*/
 
-#include <memory>
-using std::unique_ptr;
 
 #include <openssl/bn.h>
 #include <openssl/rsa.h>
@@ -13,14 +11,12 @@ using std::unique_ptr;
 #include <openssl/rand.h>
 #include <string>
 #include <iostream>
+#include <memory>
 
-#include <cassert>
-#define ASSERT assert
-
+using std::unique_ptr;
 using BN_ptr = std::unique_ptr<BIGNUM, decltype(&::BN_free)>;
 using RSA_ptr = std::unique_ptr<RSA, decltype(&::RSA_free)>;
-using EVP_KEY_ptr = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
-using BIO_FILE_ptr = std::unique_ptr<BIO, decltype(&::BIO_free)>;
+
 
 
 void print_keypair(RSA* keypair) {
@@ -72,24 +68,20 @@ void generateRSAKey(std::string seed) {
     RSA_ptr rsa(RSA_new(), ::RSA_free);
     BN_ptr bn(BN_new(), ::BN_free);
 
-    BIO_FILE_ptr pem1(BIO_new_file("rsa-public-1.pem", "w"), ::BIO_free);
-    BIO_FILE_ptr pem2(BIO_new_file("rsa-public-2.pem", "w"), ::BIO_free);
-    BIO_FILE_ptr pem3(BIO_new_file("rsa-private-1.pem", "w"), ::BIO_free);
-    BIO_FILE_ptr pem4(BIO_new_file("rsa-private-2.pem", "w"), ::BIO_free);
-    BIO_FILE_ptr pem5(BIO_new_file("rsa-private-3.pem", "w"), ::BIO_free);
-    BIO_FILE_ptr der1(BIO_new_file("rsa-public.der", "w"), ::BIO_free);
-    BIO_FILE_ptr der2(BIO_new_file("rsa-private.der", "w"), ::BIO_free);
-
     rc = BN_set_word(bn.get(), RSA_F4);
-    ASSERT(rc == 1);
+    if (!rc) {
+        std::cout << "Error creating BIGNUM\n";
+    }
 
     //bn.get() is the seed and should be replaced with our number that we want to use to seed the RSA key
 
     // Generate RSA key
     rc = RSA_generate_key_ex(rsa.get(), 2048, bn.get(), NULL);
-    ASSERT(rc == 1);
+    if (!rc) {
+        std::cout << "Error creating RSA Key pair\n";
 
-    //RSA* keypair = (RSA*)rsa.get();
+    }
+
     print_keypair(rsa.get());
 
   

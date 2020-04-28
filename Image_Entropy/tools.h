@@ -17,40 +17,6 @@
 
 using namespace std;
 
-//Takes an OpenCV type and turns it into a string so it can be printed 
-inline string type2str(int type) {
-	string r;
-
-	uchar depth = type & CV_MAT_DEPTH_MASK;
-	uchar chans = 1 + (type >> CV_CN_SHIFT);
-
-	switch (depth) {
-	case CV_8U:  r = "8U"; break;
-	case CV_8S:  r = "8S"; break;
-	case CV_16U: r = "16U"; break;
-	case CV_16S: r = "16S"; break;
-	case CV_32S: r = "32S"; break;
-	case CV_32F: r = "32F"; break;
-	case CV_64F: r = "64F"; break;
-	default:     r = "Not standard"; break;
-	}
-
-	r += "C";
-	r += (chans + '0');
-
-	return r;
-}
-
-//Prints the type of the Mat file. Used for debugging
-inline void printMatType(cv::Mat input) {
-	string imageInfo = type2str(input.type());
-	cout << "\n\n" << imageInfo.c_str() << "\n\n";
-}
-
-
-inline void printMatArray(cv::Mat M) {
-	cout << "M = " << endl << " " << M << endl << endl;
-}
 
 inline void displayMatImage(cv::Mat input) {
 
@@ -72,7 +38,6 @@ inline int mathFunc(int a, int b) {
 	return c;
 }
 
-//OLD FUCTION, NOT USED
 inline cv::Point getPQIndices(int numPStrings, int numQStrings)
 {
 	//x = p index, y = q index
@@ -148,66 +113,66 @@ inline cv::Point getPQIndices(int numPStrings, int numQStrings)
 	return indices;
 }
 
-inline int get_random_index(int numStrings) {
-
-	int N = numStrings;
-	int index = 0;
-
-	//Figure out max number of bits needed
-	int num = N;
-	int numBits = 0;
-	while (num > 0) {
-		num /= 2;
-		numBits++;
-	}
-
-	//Start stopwatch
-	auto start = std::chrono::high_resolution_clock::now();
-
-	//Execute a function. Put in junk code for testing
-	int c = mathFunc(5, 5);
-
-	//Stop stopwatch and display elapsed time
-	auto finish = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed = finish - start;
-
-	//Use elapsed.count() to get p and q indices. it is a double type
-	// need a number between 0 and N
-	double doubleValue = elapsed.count();
-	uint8_t* bytePointer = (uint8_t*)&doubleValue;
-	int factor = 1;
-	uint8_t byte;
-	int totalBitsUsed = 0;
-
-	totalBitsUsed = 0;
-	for (size_t index = 0; index < sizeof(double); index++)
-	{
-		byte = bytePointer[index];
-		for (int bit = 0; bit < 8; bit++)
-		{
-			//Only use the number bits needed to reach N
-			if (totalBitsUsed >= numBits) {
-				break;
-			}
-
-			if (index + byte * factor > N) {
-				//Reached the value just below N
-				break;
-			}
-			else {
-				index += byte * factor;
-				factor *= 2;
-			}
-
-			byte >>= 1;
-			totalBitsUsed++;
-		}
-	}
-	return index;
-}
+//inline int get_random_index(int numStrings) {
+//
+//	int N = numStrings;
+//	int index = 0;
+//
+//	//Figure out max number of bits needed
+//	int num = N;
+//	int numBits = 0;
+//	while (num > 0) {
+//		num /= 2;
+//		numBits++;
+//	}
+//
+//	//Start stopwatch
+//	auto start = std::chrono::high_resolution_clock::now();
+//
+//	//Execute a function. Put in junk code for testing
+//	int c = mathFunc(5, 5);
+//
+//	//Stop stopwatch and display elapsed time
+//	auto finish = std::chrono::high_resolution_clock::now();
+//	std::chrono::duration<double> elapsed = finish - start;
+//
+//	//Use elapsed.count() to get p and q indices. it is a double type
+//	// need a number between 0 and N
+//	double doubleValue = elapsed.count();
+//	uint8_t* bytePointer = (uint8_t*)&doubleValue;
+//	int factor = 1;
+//	uint8_t byte;
+//	int totalBitsUsed = 0;
+//
+//	totalBitsUsed = 0;
+//	for (size_t index = 0; index < sizeof(double); index++)
+//	{
+//		byte = bytePointer[index];
+//		for (int bit = 0; bit < 8; bit++)
+//		{
+//			//Only use the number bits needed to reach N
+//			if (totalBitsUsed >= numBits) {
+//				break;
+//			}
+//
+//			if (index + byte * factor > N) {
+//				//Reached the value just below N
+//				break;
+//			}
+//			else {
+//				index += byte * factor;
+//				factor *= 2;
+//			}
+//
+//			byte >>= 1;
+//			totalBitsUsed++;
+//		}
+//	}
+//	return index;
+//}
 
 //Finds alpha and beta to correct grayscale image
-inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
+inline cv::Point2f autoAdjustImage(cv::Mat input)
 {
 	cv::Point2f output;
 	int histogramLength = 256;	//For 256 possible values
@@ -224,46 +189,9 @@ inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 		cvtColor(input, gray, cv::COLOR_BGR2GRAY);
 	}
 
-	//If you don't want to cut off a certain percentage of the ends
-	if (histogramPercent == 0)
-	{
-		// keep full available range
-		cv::minMaxLoc(gray, &minVal, &maxVal);
-	}
-	else
-	{
-		float range[] = { 0, 256 };
-		const float* histRange = { range };
-
-		//Get historgram of intensity values of input image
-		calcHist(&gray, 1, 0, cv::Mat(), hist, 1, &histogramLength, &histRange, true, false);
-
-		// calculate cumulative distribution from the histogram
-		std::vector<float> accumulator(histogramLength);
-		for (int i = 0; i < histogramLength; i++)
-		{
-			if (i == 0) {
-				accumulator[0] = hist.at<float>(0);
-			}
-			else {
-				accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
-			}
-		}
-
-		// Get max value from last element in accumulator vector
-		float max = accumulator[255];
-		histogramPercent *= (max / 100.0); //make percent cut off relative to max value of histogram
-		histogramPercent /= 2.0; // divide by 2 as there are left and right sides to distribution
-
-		//Start minVal at the far left and increment until you reach the cutoff on left side
-		minVal = 0;
-		while (accumulator[minVal] <= histogramPercent)
-			minVal++;
-
-		//Start maxVal at the far right and decrement until you reach the cutoff on left side
-		while (accumulator[maxVal] >= (max - histogramPercent))
-			maxVal--;
-	}
+	
+	// keep full available range
+	cv::minMaxLoc(gray, &minVal, &maxVal);
 
 	//Calculate alpha and beta to modify each pixel in original image
 	alpha = 255 / (maxVal - minVal);
@@ -341,7 +269,7 @@ inline ImageValidity detectBadImage(cv::Mat input)
 	int upperThresh = 220;
 
 	//Use the grayscale image to fix the original image
-	cv::Point2f values = autoAdjustImage(input, 0.25);
+	cv::Point2f values = autoAdjustImage(input);
 	alpha = (double)values.x;
 	beta = (double)values.y;
 
