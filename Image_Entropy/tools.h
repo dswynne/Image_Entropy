@@ -175,12 +175,9 @@ inline cv::Point getPQIndices(int numPStrings, int numQStrings)
 inline cv::Point2f autoAdjustImage(cv::Mat input)
 {
 	cv::Point2f output;
-	int histogramLength = 256;	//For 256 possible values
 	float alpha, beta;
-	double minVal = 0, maxVal = (double)histogramLength - 1;
-	cv::Mat hist; //the grayscale histogram
+	double minVal = 0, maxVal = 0;
 
-	//to calculate grayscale histogram
 	cv::Mat gray;
 	if (input.type() == CV_8UC1) {
 		gray = input;
