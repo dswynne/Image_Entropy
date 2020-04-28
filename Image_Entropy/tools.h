@@ -210,9 +210,9 @@ inline int get_random_index(int numStrings) {
 inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 {
 	cv::Point2f output;
-	int histogramLength = 256;
+	int histogramLength = 256;	//For 256 possible values
 	float alpha, beta;
-	double minGray = 0, maxGray = 0;
+	double minVal = 0, maxVal = (double)histogramLength - 1;
 	cv::Mat hist; //the grayscale histogram
 
 	//to calculate grayscale histogram
@@ -228,7 +228,7 @@ inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 	if (histogramPercent == 0)
 	{
 		// keep full available range
-		cv::minMaxLoc(gray, &minGray, &maxGray);
+		cv::minMaxLoc(gray, &minVal, &maxVal);
 	}
 	else
 	{
@@ -240,31 +240,34 @@ inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 
 		// calculate cumulative distribution from the histogram
 		std::vector<float> accumulator(histogramLength);
-		accumulator[0] = hist.at<float>(0);
-		for (int i = 1; i < histogramLength; i++)
+		for (int i = 0; i < histogramLength; i++)
 		{
-			accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+			if (i == 0) {
+				accumulator[0] = hist.at<float>(0);
+			}
+			else {
+				accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+			}
 		}
 
 		// Get max value from last element in accumulator vector
-		float max = accumulator.back();
+		float max = accumulator[255];
 		histogramPercent *= (max / 100.0); //make percent cut off relative to max value of histogram
 		histogramPercent /= 2.0; // divide by 2 as there are left and right sides to distribution
 
-		//Start minGray at the far left and increment until you reach the cutoff on left side
-		minGray = 0;
-		while (accumulator[minGray] <= histogramPercent)
-			minGray++;
+		//Start minVal at the far left and increment until you reach the cutoff on left side
+		minVal = 0;
+		while (accumulator[minVal] <= histogramPercent)
+			minVal++;
 
-		//Start maxGray at the far right and decrement until you reach the cutoff on left side
-		maxGray = histogramLength - 1;
-		while (accumulator[maxGray] >= (max - histogramPercent))
-			maxGray--;
+		//Start maxVal at the far right and decrement until you reach the cutoff on left side
+		while (accumulator[maxVal] >= (max - histogramPercent))
+			maxVal--;
 	}
 
 	//Calculate alpha and beta to modify each pixel in original image
-	alpha = 255 / (maxGray - minGray);
-	beta = -minGray * alpha;
+	alpha = 255 / (maxVal - minVal);
+	beta = -minVal * alpha;
 
 	output.x = alpha;
 	output.y = beta;
