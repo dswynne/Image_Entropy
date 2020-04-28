@@ -62,6 +62,9 @@
     <ClInclude Include="hash2seed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="generateKeys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="old_main_code.txt">

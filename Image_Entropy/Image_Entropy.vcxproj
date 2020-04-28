@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="extractor.h" />
     <ClInclude Include="filter.h" />
+    <ClInclude Include="generateKeys.h" />
     <ClInclude Include="gen_bitstrings.h" />
     <ClInclude Include="hash2seed.h" />
     <ClInclude Include="mat_divisions.h" />
