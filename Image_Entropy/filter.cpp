@@ -23,27 +23,29 @@ using namespace std;
 //Applies a filter to add layer of random to the image
 
 Mat applyFilter(Mat input) {
-	Mat grayInput = input;
+	Mat rgbInput = input;
 	int rows = input.rows;
 	int cols = input.cols;
 	int randRowIndex = rows - 1;
 	int randColIndex = cols - 1;
 
 	//If not grayscale, convert to grayscale
-	if (input.dims > 2) {
-		cvtColor(input, grayInput, COLOR_BGR2GRAY);
-	}
+	//if (input.dims > 2) {
+	//	cvtColor(input, grayInput, COLOR_BGR2GRAY);
+	//}
 	//Get a value from grayscale image to use for "random" filter
-	uchar randVal = grayInput.at<uchar>(randRowIndex, randColIndex);
+	Vec3b randVal = rgbInput.at<cv::Vec3b>(randRowIndex, randColIndex);
 
 	// Apply our version of salt and pepper filter
-	for (int i = 0; i < rows; i+=2) {
-		for (int j = 0; j < cols; j+=2) {
-			grayInput.at<uchar>(i, j) = randVal;
-
+	for (int i = 0; i < rows; i += 4) {
+		for (int j = 0; j < cols; j += 4) {
+			for (int k = 0; k < input.channels(); k++) {
+				rgbInput.at<cv::Vec3b>(i, j)[k] = randVal[k];
+			}
 		}
 	}
-	return grayInput;
+
+	return rgbInput;
 }
 
 /* This function applies a Salt & Pepper Noise filter on all three RGB color channels */

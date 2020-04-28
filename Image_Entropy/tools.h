@@ -52,6 +52,15 @@ inline void printMatArray(cv::Mat M) {
 	cout << "M = " << endl << " " << M << endl << endl;
 }
 
+inline void displayMatImage(cv::Mat input) {
+
+	cv::namedWindow("Display window", cv::WINDOW_AUTOSIZE);// Create a window for display.
+	cv::imshow("Display window", input);
+
+	cv::waitKey(0);
+
+}
+
 //Junk function used for getPQIndices()
 inline int mathFunc(int a, int b) {
 	int c = 0;
@@ -63,7 +72,7 @@ inline int mathFunc(int a, int b) {
 	return c;
 }
 
-
+//OLD FUCTION, NOT USED
 inline cv::Point getPQIndices(int numPStrings, int numQStrings)
 {
 	//x = p index, y = q index
@@ -225,7 +234,7 @@ inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 	{
 		float range[] = { 0, 256 };
 		const float* histRange = { range };
-		
+
 		//Get historgram of intensity values of input image
 		calcHist(&gray, 1, 0, cv::Mat(), hist, 1, &histogramLength, &histRange, true, false);
 
@@ -234,7 +243,7 @@ inline cv::Point2f autoAdjustImage(cv::Mat input, float histogramPercent)
 		accumulator[0] = hist.at<float>(0);
 		for (int i = 1; i < histogramLength; i++)
 		{
-			accumulator[i] = accumulator[i-1] + hist.at<float>(i);
+			accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
 		}
 
 		// Get max value from last element in accumulator vector
@@ -333,13 +342,14 @@ inline ImageValidity detectBadImage(cv::Mat input)
 	alpha = (double)values.x;
 	beta = (double)values.y;
 
+	cout << "Alpha: " << alpha << " Beta: " << beta << "\n";
+
 	// Apply alpha and beta to get new image
-	//convertScaleAbs(input, output, alpha, beta);
-	for (int y = 0; y < input.rows; y++) {
-		for (int x = 0; x < input.cols; x++) {
-			for (int c = 0; c < input.channels(); c++) {
-				output.at<cv::Vec3b>(y, x)[c] =
-					cv::saturate_cast<uchar>(alpha * input.at<cv::Vec3b>(y, x)[c] + beta);
+	for (int i = 0; i < input.rows; i++) {
+		for (int j = 0; j < input.cols; j++) {
+			for (int k = 0; k < input.channels(); k++) {
+				output.at<cv::Vec3b>(i, j)[k] =
+					cv::saturate_cast<uchar>(alpha * input.at<cv::Vec3b>(i, j)[k] + beta);
 			}
 		}
 	}
