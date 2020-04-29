@@ -10,13 +10,55 @@ Contains functions for RSA key generation and AES key generation
 #include <openssl/bio.h>
 #include <openssl/rand.h>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <memory>
 
 using std::unique_ptr;
 using BN_ptr = std::unique_ptr<BIGNUM, decltype(&::BN_free)>;
 using RSA_ptr = std::unique_ptr<RSA, decltype(&::RSA_free)>;
+using namespace std;
 
+struct retValsRSA {
+    std::string publicKey;
+    std::string privateKey;
+};
+
+struct retValsAES {
+    std::string key;
+    std::string iv;
+
+};
+
+retValsRSA convertRSAtoString(RSA* keypair) {
+
+    retValsRSA r;
+    // To get the C-string PEM form:
+    BIO* pri = BIO_new(BIO_s_mem());
+    BIO* pub = BIO_new(BIO_s_mem());
+
+    PEM_write_bio_RSAPrivateKey(pri, keypair, NULL, NULL, 0, NULL, NULL);
+    PEM_write_bio_RSAPublicKey(pub, keypair);
+
+    size_t pri_len = BIO_pending(pri);
+    size_t pub_len = BIO_pending(pub);
+
+    char* pri_key, * pub_key;
+    pri_key = (char*)malloc(pri_len + 1);
+    pub_key = (char*)malloc(pub_len + 1);
+
+    BIO_read(pri, pri_key, pri_len);
+    BIO_read(pub, pub_key, pub_len);
+
+    pri_key[pri_len] = '\0';
+    pub_key[pub_len] = '\0';
+
+    r.privateKey = pri_key;
+    r.publicKey = pub_key;
+
+    return r;
+
+}
 
 
 void print_keypair(RSA* keypair) {
@@ -49,7 +91,7 @@ void print_keypair(RSA* keypair) {
 }
 
 
-void generateRSAKey(std::string seed) {
+retValsRSA generateRSAKey(std::string seed) {
 
     OpenSSL_add_all_algorithms();
 
@@ -84,14 +126,17 @@ void generateRSAKey(std::string seed) {
 
     print_keypair(rsa.get());
 
-  
-    return;
-}
+    retValsRSA r = convertRSAtoString(rsa.get());
+
+    return r;
+ }
 
 
-void generateAESKey() {
+retValsAES generateAESKey() {
 
     unsigned char key[16], iv[16];
+
+    retValsAES a;
 
     //Seed random generation with our own value
     //Could use a 16 or 32 bits from our random number to be used here
@@ -105,17 +150,29 @@ void generateAESKey() {
         /* OpenSSL reports a failure, act accordingly */
     }
 
-    //Display char key in hex
-    std::cout << "AES Key: ";
+    //write char keys and iv to string in hex format
+    ostringstream keyString;
+    ostringstream ivString;
+    cout << "AES Key: ";
 
     for (int i = 0; i < 16; i++) {
-        std::cout << std::hex << (int)key[i] << " ";
+        cout << hex << (int)key[i] << " ";
+        keyString << hex << (int)key[i];
+
     }
-    std::cout << "\n";
-    std::cout << "AES Initialization Vector: ";
+
+    cout << "\n";
+    cout << "AES Initialization Vector: ";
     for (int i = 0; i < 16; i++) {
-        std::cout << std::hex << (int)iv[i] << " ";
+        cout << hex << (int)iv[i] << " ";
+        ivString << hex << (int)iv[i];
     }
-    std::cout << "\n";
+    cout << "\n";
+
+    a.key = keyString.str();
+    a.iv = ivString.str();
+
+    return a;
+
 
 }
