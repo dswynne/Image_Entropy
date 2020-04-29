@@ -7,6 +7,7 @@ using std::unique_ptr;
 #include <openssl/bio.h>
 #include <openssl/x509.h>
 #include <openssl/rand.h>
+#include <string>
 
 #include <cassert>
 #define ASSERT assert
@@ -28,8 +29,18 @@ https://stackoverflow.com/questions/20065304/differences-between-begin-rsa-priva
 -----------------------------------------------------------------------------------------------------------------------------
 */
 
-void generateRSAKey(){
+void generateRSAKey(std::string seed){
     int rc;
+ 
+    const void* buffer;
+    //buffer = seed.length * malloc(sizeof(char));
+
+    //convert seed string to num
+    std::string::size_type sz;   // alias of size_t
+    int numSeed = std::stoi(seed, &sz);
+
+    //Seed key pair generation with our seed
+    RAND_seed(buffer, numSeed);
 
     RSA_ptr rsa(RSA_new(), ::RSA_free);
     BN_ptr bn(BN_new(), ::BN_free);
