@@ -44,8 +44,8 @@ int main(int argc, char* argv[]) {
         path += cwd[i];
         i++;
     }
-    path.append("\\images\\27-u3kAmlA.jpg");
-
+    //path.append("\\images\\27-u3kAmlA.jpg");
+    path.append("\\images\\28-jk8YxLB.jpg");
     if (argc < 2) {
         I = imread(path, IMREAD_COLOR);
     }

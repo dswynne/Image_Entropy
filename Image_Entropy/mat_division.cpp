@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <algorithm>
+#include <iterator>
 /* Developer Created Libraries*/
 #include "mat_divisions.h"
 
@@ -22,49 +24,129 @@ using namespace std;
 */
 vector<vector<int>> make_square(vector<vector<int>> intensity_mat) {
     int i, j;
-    const int rows = intensity_mat.size();
-    const int cols = intensity_mat[0].size();
+    int rows = intensity_mat.size();
+    int cols = intensity_mat[0].size();
     int reshapeFactor;
-
+    vector<vector<int>> intensity_sq;
+    
     if (rows == cols) { // already a square
-        vector<vector<int>> intensity_sq;
+        intensity_sq = intensity_mat;
+        //for (i = 0; i < rows; i++) {
+        //    vector<int> row(rows);
+        //    for (j = 0; j < cols; j++) {
+        //        row[j] = intensity_mat[i][j];
+        //    }
+        //    intensity_sq.push_back(row);
+        //}
+        return intensity_sq;
+    }
+    else {
+        vector<vector<int>> intensity_mat2square;
 
+        if (rows > cols) { // portrait photo
+            reshapeFactor = floor((rows - cols) / 2);
+
+            // transposing the matrix so logic did not have to be rewritten
+            vector<vector<int> > trans_vec(intensity_mat[0].size(), vector<int>());
+
+            for (i = 0; i < intensity_mat.size(); ++i) {
+                vector<int> row(cols);
+                for (j = 0; j < intensity_mat[i].size(); ++j) {
+                    trans_vec[j].push_back(intensity_mat[i][j]);
+                }
+
+            }
+            intensity_mat = trans_vec; 
+            rows = intensity_mat.size();
+            cols = intensity_mat[0].size();
+        }
+        else { // landscape photo
+            reshapeFactor = floor((cols - rows) / 2);
+        }
+
+        // Making a rows x (reshapeFactor + rows) matrix
         for (i = 0; i < rows; i++) {
-            vector<int> row(rows);
-            for (j = 0; j < cols; j++) {
-                row[j] = intensity_mat[i][j];
-            }
-            intensity_sq.push_back(row);
-        }
-        return intensity_sq;
-    }
-    else if (rows > cols) { // portrait photo
-        reshapeFactor = floor((rows - cols) / 2);
-        vector<vector<int>> intensity_sq;
-
-        for (i = 0; i < cols + reshapeFactor; i++) {
-            vector<int> row(cols + reshapeFactor);
-            for (j = 0; j < cols + reshapeFactor; j++) {
-                row[j] = intensity_mat[i][j];
-            }
-            intensity_sq.push_back(row);
-        }
-        return intensity_sq;
-    }
-    else if (rows < cols) { // landscape photo
-        reshapeFactor = floor((rows - cols) / 2);
-        vector<vector<int>> intensity_sq;
-
-        for (i = 0; i < rows + reshapeFactor; i++) {
             vector<int> row(rows + reshapeFactor);
             for (j = 0; j < rows + reshapeFactor; j++) {
                 row[j] = intensity_mat[i][j];
             }
             intensity_sq.push_back(row);
         }
+
+        // Putting the remaining rows x (cols - reshapeFactor) matrix in a 1D array
+        int k = 0;
+        const int len = rows * reshapeFactor;
+        vector<int> temp(len);
+
+        for (j = cols - reshapeFactor; j < cols; j++) {
+            for (i = 0; i < rows; i++) {
+                temp[k] = intensity_mat[i][j];
+            }
+        }
+
+        // Adding the rest of the matrix to the bottom
+        k = 0;
+        while (k < temp.size()) {
+            vector<int> row(rows + reshapeFactor);
+            for (j = 0; j < rows + reshapeFactor; j++) {
+                row[j] = temp[k];
+                k++;
+                if (k >= temp.size()) {
+                    break;
+                }
+            }
+            if (k < temp.size()) {
+                intensity_sq.push_back(row);
+                i++;
+            }
+        }
+
+        // Chopping off the excess columns
+        j = intensity_sq[0].size() - 1;
+        while (j >= intensity_sq.size()) {
+            for_each(intensity_sq.begin(), intensity_sq.end(),
+                [&](vector<int>& row) {
+                row.erase(next(row.begin(), j));
+            });
+            j = intensity_sq[0].size() - 1;
+        }
+
+        // Temporarily storing noisy rows at in a seperate vector and deleting them
+        int excessRows = intensity_sq.size() - rows;
+        int spacing = floor(rows / excessRows);
+        vector<vector<int>> noisyRows;
+
+        // storing them in a seperate vector
+        for (i = rows; i < intensity_sq.size(); i++) {
+            vector<int> row(intensity_sq[0].size());
+            for (j = 0; j < intensity_sq[0].size(); j++) {
+                row[j] = intensity_sq[i][j];
+            }
+            noisyRows.push_back(row);
+        }
+        // deleting them from the primary vector
+        int goalSize = intensity_sq.size();
+        for (i = rows; i < goalSize; i++) {
+            intensity_sq.erase(intensity_sq.end() - 1);
+        }
+
+        // Interweaving the noisy rows back into the image
+        k = 0;
+        i = spacing;
+        while (i <= rows + excessRows) {
+            intensity_sq.insert(intensity_sq.begin() + i, noisyRows[k]);
+            i = i + spacing;
+            if (k < noisyRows.size() - 1) {
+                k++;
+            }
+            else {
+                break;
+            }
+        }
+
         return intensity_sq;
     }
-
+    
 }
 
 /* This implementation horizontally weaves through the 2D matrix row by row ergo the name snake. 
