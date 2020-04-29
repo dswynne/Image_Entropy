@@ -270,7 +270,7 @@ inline ImageValidity detectBadImage(cv::Mat input)
 	alpha = (double)values.x;
 	beta = (double)values.y;
 
-	cout << "Alpha: " << alpha << " Beta: " << beta << "\n";
+	//cout << "Alpha: " << alpha << " Beta: " << beta << "\n";
 
 	// Apply alpha and beta to get new image
 	for (int i = 0; i < input.rows; i++) {

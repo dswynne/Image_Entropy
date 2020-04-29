@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
     //vector<string> bitstrings = gen_bitstrings_bitshift(allpix);
     
     // Using an extractor to generate a seed that is closer to truly random
-    //string seed = vn_extractor(bitstrings);
+    // string seed = vn_extractor(bitstrings);
     string extracted = xor_extractor(bitstrings);
         
     //Using SHA-2 Hash function to generate a random hash
