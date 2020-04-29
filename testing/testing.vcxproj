@@ -154,7 +154,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cephes.cpp" />
-    <ClCompile Include="metric_ent.cpp" />
     <ClCompile Include="nist_sts_tests.cpp" />
     <ClCompile Include="testing.cpp" />
   </ItemGroup>
@@ -163,7 +162,6 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="externs.h" />
-    <ClInclude Include="metric_ent.h" />
     <ClInclude Include="nist_sts_tests.h" />
     <ClInclude Include="stat_fncs.h" />
     <ClInclude Include="utilities.h" />

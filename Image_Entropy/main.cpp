@@ -44,8 +44,8 @@ int main(int argc, char* argv[]) {
         path += cwd[i];
         i++;
     }
-    path.append("\\images\\27-u3kAmlA.jpg");
-
+    //path.append("\\images\\27-u3kAmlA.jpg");
+    path.append("\\images\\28-jk8YxLB.jpg");
     if (argc < 2) {
         I = imread(path, IMREAD_COLOR);
     }
@@ -87,8 +87,10 @@ int main(int argc, char* argv[]) {
     
     // Using an extractor to generate a seed that is closer to truly random
     //string seed = vn_extractor(bitstrings);
+    //string seed = xor_extractor(bitstrings);
     string extracted = xor_extractor(bitstrings);
-        
+    //string extracted = vn_extractor(bitstrings);
+
     //Using SHA-2 Hash function to generate a random hash
     string hash = sha256(extracted);
 
