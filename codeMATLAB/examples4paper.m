@@ -35,11 +35,10 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
 % Save as .png
 saveas(fig,'blended.png');
 %% Make it into a sqaure matrix
-% (NEED TO) Fix this logic so that it actually makes a square out of the
-% existing matrix and does not throw away a large chunk
 rows = size(M,1);
 cols = size(M,2);
-reshapeFactor = floor((cols - rows) / 2);
+% reshapeFactor = floor((cols - rows) / 2);
+reshapeFactor = cols - rows;
 
 % Making a rows x (reshapeFactor + rows) matrix
 for i = 1:rows

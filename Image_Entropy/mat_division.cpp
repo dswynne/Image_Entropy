@@ -16,13 +16,55 @@
 
 using namespace std;
 
+vector<vector<int>> make_square_crop(vector<vector<int>> intensity_mat) {
+    int i, j;
+    int rows = intensity_mat.size();
+    int cols = intensity_mat[0].size();
+    int reshapeFactor;
+    vector<vector<int>> intensity_sq;
+    if (rows == cols) { // already a square
+        intensity_sq = intensity_mat;
+        //for (i = 0; i < rows; i++) {
+        //    vector<int> row(rows);
+        //    for (j = 0; j < cols; j++) {
+        //        row[j] = intensity_mat[i][j];
+        //    }
+        //    intensity_sq.push_back(row);
+        //}
+        return intensity_sq;
+    }
+    else if (rows > cols) { // portrait photo 
+        reshapeFactor = floor((cols - rows)/2);
 
+        for (i = 0; i < cols + reshapeFactor; i++) {
+            vector<int> row(cols+reshapeFactor);
+            for (j = 0; j < cols + reshapeFactor; j++) {
+                row[j] = intensity_mat[i][j];
+            }
+            intensity_sq.push_back(row);
+        }
+        return intensity_sq;
+    }
+    else if (rows < cols) { // landscape photo
+        reshapeFactor = floor((rows - cols)/2);
+
+        for (i = 0; i < rows + reshapeFactor; i++) {
+            vector<int> row(rows + reshapeFactor);
+            for (j = 0; j < rows + reshapeFactor; j++) {
+                row[j] = intensity_mat[i][j];
+            }
+            intensity_sq.push_back(row);
+        }
+        return intensity_sq;
+    }
+
+}
 /* This function is called by all implementations of matrix dividing.
    It simply takes a rectangular matrix and makes it a square matrix.
    This helps with simplifyinhg logic in the matrix diving functions
    as well as further altering the initial input image.
 */
-vector<vector<int>> make_square(vector<vector<int>> intensity_mat) {
+vector<vector<int>> make_square_reshape(vector<vector<int>> intensity_mat) {
     int i, j;
     int rows = intensity_mat.size();
     int cols = intensity_mat[0].size();
@@ -44,8 +86,6 @@ vector<vector<int>> make_square(vector<vector<int>> intensity_mat) {
         vector<vector<int>> intensity_mat2square;
 
         if (rows > cols) { // portrait photo
-            reshapeFactor = floor((rows - cols) / 2);
-
             // transposing the matrix so logic did not have to be rewritten
             vector<vector<int> > trans_vec(intensity_mat[0].size(), vector<int>());
 
@@ -59,9 +99,10 @@ vector<vector<int>> make_square(vector<vector<int>> intensity_mat) {
             intensity_mat = trans_vec; 
             rows = intensity_mat.size();
             cols = intensity_mat[0].size();
+            reshapeFactor = cols - rows;
         }
         else { // landscape photo
-            reshapeFactor = floor((cols - rows) / 2);
+            reshapeFactor = cols - rows;
         }
 
         // Making a rows x (reshapeFactor + rows) matrix
@@ -155,7 +196,7 @@ vector<vector<int>> make_square(vector<vector<int>> intensity_mat) {
 */
 vector<int> mat_snake(vector<vector<int>> intensity_mat) {
     // converting matrix to square matrix
-    vector<vector<int>> intensity_sq = make_square(intensity_mat);
+    vector<vector<int>> intensity_sq = make_square_crop(intensity_mat);
     // intializing values
     int i, j;
     int rows = intensity_sq.size();
@@ -184,7 +225,7 @@ vector<int> mat_snake(vector<vector<int>> intensity_mat) {
 */
 vector<int> mat_cross(vector<vector<int>> intensity_mat) {
     // converting matrix to square matrix
-    vector<vector<int>> intensity_sq = make_square(intensity_mat);
+    vector<vector<int>> intensity_sq = make_square_crop(intensity_mat);
     // intializing values
     int i, j, k;            // iterators
     int m, n;               // m keeps track of next row and n keeps track of next column 
@@ -271,7 +312,7 @@ vector<int> mat_cross(vector<vector<int>> intensity_mat) {
 */
 vector<int> mat_jump(vector<vector<int>> intensity_mat) {
     // converting matrix to square matrix
-    vector<vector<int>> intensity_sq = make_square(intensity_mat);
+    vector<vector<int>> intensity_sq = make_square_crop(intensity_mat);
     // intializing values
     int i = 0, j = 0, k = 0;
     int rows = intensity_sq.size();

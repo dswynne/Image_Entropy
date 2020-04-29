@@ -260,7 +260,6 @@ void LongestRunOfOnes(string epsilon)
 		 }
 
 		 pi = (double)blockSum / (double)M;
-		 cout << blockSum << endl;
 		 v = pi - 0.5;
 		 sum += v * v;
 	 }
