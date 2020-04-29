@@ -6,6 +6,6 @@
 #include <opencv2/highgui.hpp>
 
 
-cv::Mat applyFilter(cv::Mat input);
-std::array<cv::Mat, 3> applyFilter_BGR(cv::Mat I);
+cv::Mat applyFilter_GS(cv::Mat input);
+std::vector<std::vector<int>>  applyFilter_BGR(cv::Mat I);
 std::vector<std::vector<int>> channel_blender(std::array<cv::Mat, 3> filteredI);

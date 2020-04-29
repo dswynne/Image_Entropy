@@ -36,24 +36,27 @@ int main(int argc, char* argv[]) {
     myfile.open("output.txt", ios_base::app);
     // Getting image
     Mat I;
-    char cwd[MAXPATHLEN];
-    _getcwd(cwd, sizeof(cwd));
-    string path;
-    int i= 0;
-    while (cwd[i] != '\0') {
-        path += cwd[i];
-        i++;
-    }
-    //path.append("\\images\\27-u3kAmlA.jpg");
-    path.append("\\images\\28-jk8YxLB.jpg");
+
+
     if (argc < 2) {
-        I = imread(path, IMREAD_COLOR);
+        char cwd[MAXPATHLEN];
+        _getcwd(cwd, sizeof(cwd));
+        string path;
+        int i = 0;
+        while (cwd[i] != '\0') {
+            path += cwd[i];
+            i++;
+        }
+        //path.append("\\images\\27-u3kAmlA.jpg");
+        //path.append("\\images\\28-jk8YxLB.jpg");
+        path.append("\\images\\Lena.bmp");
+        I = imread(path);//IMREAD_ANYDEPTH
     }
     else {
         I = imread(argv[1]);
     }
 
-
+    cout << I.channels();
     int rows = I.rows;
     int cols = I.cols;
 
@@ -71,25 +74,16 @@ int main(int argc, char* argv[]) {
     
     
     // Applying noise filter to the image
-    array<Mat, 3> filteredI = applyFilter_BGR(I);
-    
-    // Taking the BGR channels and XORing them for each pixel
-    vector<vector<int>> blendedI = channel_blender(filteredI);
-        
+    vector<vector<int>> vecI = applyFilter_BGR(I);
+           
     // Divding up the 2D intensity Mat and storing it in a 1D intensity vector 
-    vector<int> allpix = mat_jump(blendedI);
+    vector<int> allpix = mat_jump(vecI);
 
     // Generating N 32 byte bitstrings from the 1D intensity vector
-    //vector<string> bitstrings = gen_bitstrings_whole_pixel(allpix);
-    //vector<string> bitstrings = gen_bitstrings_HL(allpix);
     vector<string> bitstrings = gen_bitstrings_LSB(allpix);
-    //vector<string> bitstrings = gen_bitstrings_bitshift(allpix);
     
     // Using an extractor to generate a seed that is closer to truly random
-    //string seed = vn_extractor(bitstrings);
-    //string seed = xor_extractor(bitstrings);
     string extracted = xor_extractor(bitstrings);
-    //string extracted = vn_extractor(bitstrings);
 
     //Using SHA-2 Hash function to generate a random hash
     string hash = sha256(extracted);

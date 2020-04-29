@@ -22,7 +22,7 @@ using namespace std;
 
 //Applies a filter to add layer of random to the image
 
-Mat applyFilter(Mat input) {
+Mat applyFilter_GS(Mat input) {
 	Mat rgbInput = input;
 	int rows = input.rows;
 	int cols = input.cols;
@@ -44,36 +44,62 @@ Mat applyFilter(Mat input) {
 	return rgbInput;
 }
 
-/* This function applies a Salt & Pepper Noise filter on all three RGB color channels */
-array<Mat, 3>  applyFilter_BGR(Mat I) {
-	Mat bgrI[3];
-	split(I, bgrI);
-	Mat B = bgrI[0];
-	Mat G = bgrI[1];
-	Mat R = bgrI[2];
-	
-	Mat saltpepper_noise = Mat::zeros(B.rows, B.cols, CV_8U);
-	randu(saltpepper_noise, 0, 255);
+/* This function applies a Salt & Pepper Noise filter on all three RGB color channels.
+	The function then calls a subfunction that blends all the channels back together.
+	Or it calls the grayscale filtering function if the image is detected to be grey scale.
+	If the image is grayscale there is no need to blend the channels.
+*/
+vector<vector<int>>  applyFilter_BGR(Mat I) {
+	if (I.channels() == 1) { // Grayscale
+		Mat filteredI = applyFilter_GS(I);
+		vector<vector<int>> vecI;
+		int i, j;
 
-	Mat black = saltpepper_noise < 30;
-	Mat white = saltpepper_noise > 225;
+		for (i = 0; i < filteredI.rows; i++) {
+			vector<int> row(filteredI.cols);
+			for (j = 0; j < filteredI.cols; j++) {
+				row[j] = int(filteredI.at<uchar>(i, j));
+			}
+			vecI.push_back(row);
+		}
+		
+		return vecI;
+	}
+	else if (I.channels() == 3) { // RGB
+		Mat bgrI[3];
+		split(I, bgrI);
+		Mat B = bgrI[0];
+		Mat G = bgrI[1];
+		Mat R = bgrI[2];
 
-	Mat spB = B.clone();
-	Mat spG = G.clone();
-	Mat spR = R.clone();
-	spB.setTo(255, white);
-	spB.setTo(0, black);
-	spG.setTo(255, white);
-	spG.setTo(0, black);
-	spR.setTo(255, white);
-	spR.setTo(0, black);
-	
-	array<Mat, 3> spBGR;
-	spBGR[0] = spB;
-	spBGR[1] = spG;
-	spBGR[2] = spR;
+		Mat saltpepper_noise = Mat::zeros(B.rows, B.cols, CV_8U);
+		randu(saltpepper_noise, 0, 255);
 
-	return spBGR;
+		Mat black = saltpepper_noise < 30;
+		Mat white = saltpepper_noise > 225;
+
+		Mat spB = B.clone();
+		Mat spG = G.clone();
+		Mat spR = R.clone();
+		spB.setTo(255, white);
+		spB.setTo(0, black);
+		spG.setTo(255, white);
+		spG.setTo(0, black);
+		spR.setTo(255, white);
+		spR.setTo(0, black);
+
+		array<Mat, 3> filteredI;
+		filteredI[0] = spB;
+		filteredI[1] = spG;
+		filteredI[2] = spR;
+
+		vector<vector<int>> vecI = channel_blender(filteredI);
+		return vecI;
+	}
+	else { // not an accebtable color coordinate system
+		vector<vector<int>> vecI;
+		return vecI;
+	}
 }
 
 /* This function takes the BGR channels and XOR's them to create a one channel 2D matrix */
