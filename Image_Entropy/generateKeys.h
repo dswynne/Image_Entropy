@@ -91,22 +91,17 @@ void print_keypair(RSA* keypair) {
 }
 
 
-retValsRSA generateRSAKey(std::string seed) {
+retValsRSA generateRSAKey(std::string seedString) {
 
-    OpenSSL_add_all_algorithms();
+    //OpenSSL_add_all_algorithms();
 
     int rc;
-
-    const void* buffer;
-    //buffer = seed.length * malloc(sizeof(char));
-
-    //convert seed string to num
-    //std::string::size_type sz;   // alias of size_t
-    //int numSeed = std::stoi(seed, &sz);
-
-    //Seed key pair generation with our seed
-    //RAND_seed(buffer, numSeed);
-
+    int seed;
+    std::istringstream(seedString) >> seed;
+    cout << "seed num: " << seed << "\n";
+    void* buffer = malloc(sizeof(int));
+    RAND_seed(buffer, seed);
+  
     RSA_ptr rsa(RSA_new(), ::RSA_free);
     BN_ptr bn(BN_new(), ::BN_free);
 
@@ -114,8 +109,6 @@ retValsRSA generateRSAKey(std::string seed) {
     if (!rc) {
         std::cout << "Error creating BIGNUM\n";
     }
-
-    //bn.get() is the seed and should be replaced with our number that we want to use to seed the RSA key
 
     // Generate RSA key
     rc = RSA_generate_key_ex(rsa.get(), 2048, bn.get(), NULL);
@@ -132,16 +125,17 @@ retValsRSA generateRSAKey(std::string seed) {
  }
 
 
-retValsAES generateAESKey() {
+retValsAES generateAESKey(std::string seedString) {
 
     unsigned char key[16], iv[16];
-
     retValsAES a;
 
     //Seed random generation with our own value
-    //Could use a 16 or 32 bits from our random number to be used here
-    unsigned int num;
-    //RAND_seed(const void *buf, int num)
+    int seed;
+    std::istringstream(seedString) >> seed;
+    cout << "seed num: " << seed << "\n";
+    void* buffer = malloc(sizeof(int));
+    RAND_seed(buffer, seed);
 
     if (!RAND_bytes(key, sizeof key)) {
         /* OpenSSL reports a failure, act accordingly */
@@ -153,26 +147,23 @@ retValsAES generateAESKey() {
     //write char keys and iv to string in hex format
     ostringstream keyString;
     ostringstream ivString;
-    cout << "AES Key: ";
+    //cout << "AES Key: ";
 
     for (int i = 0; i < 16; i++) {
-        cout << hex << (int)key[i] << " ";
+        //cout << hex << (int)key[i] << " ";
         keyString << hex << (int)key[i];
 
     }
 
-    cout << "\n";
-    cout << "AES Initialization Vector: ";
+    //cout << "\n";
+    //cout << "AES Initialization Vector: ";
     for (int i = 0; i < 16; i++) {
-        cout << hex << (int)iv[i] << " ";
+        //cout << hex << (int)iv[i] << " ";
         ivString << hex << (int)iv[i];
     }
-    cout << "\n";
+    //cout << "\n";
 
     a.key = keyString.str();
     a.iv = ivString.str();
-
     return a;
-
-
 }

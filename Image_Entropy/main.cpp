@@ -25,6 +25,7 @@
 #include "tools.h"
 #include "sha256.h"
 #include "hash2seed.h"
+#include "generateKeys.h"
 
 using namespace cv;
 using namespace std;
@@ -90,6 +91,10 @@ int main(int argc, char* argv[]) {
 
     // Converting the hash into a new bitstring that will serve as the seed
     string seed = hash2seed(hash);
+
+    //Generate RSA keypair and AES key
+    retValsRSA r = generateRSAKey(seed);
+    retValsAES a = generateAESKey(seed);
 
     // Outputting seed into a file
     myfile << seed << "\n";
