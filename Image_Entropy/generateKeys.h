@@ -93,12 +93,23 @@ void print_keypair(RSA* keypair) {
 
 retValsRSA generateRSAKey(std::string seedString) {
 
-    //OpenSSL_add_all_algorithms();
 
+    OpenSSL_add_all_algorithms();
     int rc;
+    const int maxSeed = 675000;
+
+    //Only pull last 6 values of string
+    std::string subString = seedString.substr(0, 6);
     int seed;
-    std::istringstream(seedString) >> seed;
-    cout << "seed num: " << seed << "\n";
+
+    //Convert string seed to int
+    std::istringstream(subString) >> seed;
+
+    //if value is greater than 675000, then only take last 5 values
+    if (seed > maxSeed) {
+        subString = subString.substr(0, 5);
+        std::istringstream(subString) >> seed;
+    }
     void* buffer = malloc(sizeof(int));
     RAND_seed(buffer, seed);
   
@@ -131,8 +142,20 @@ retValsAES generateAESKey(std::string seedString) {
     retValsAES a;
 
     //Seed random generation with our own value
+    const int maxSeed = 675000;
+
+    //Only pull last 6 values of string
+    std::string subString = seedString.substr(0, 6);
     int seed;
-    std::istringstream(seedString) >> seed;
+
+    //Convert string seed to int
+    std::istringstream(subString) >> seed;
+
+    //if value is greater than 675000, then only take last 5 values
+    if (seed > maxSeed) {
+        subString = subString.substr(0, 5);
+        std::istringstream(subString) >> seed;
+    }
     cout << "seed num: " << seed << "\n";
     void* buffer = malloc(sizeof(int));
     RAND_seed(buffer, seed);
