@@ -1,0 +1,176 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.IO;
+using System.Windows.Forms;
+using System.Diagnostics;
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        // Get current working directory
+        string curDir = Directory.GetCurrentDirectory();
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void genKeysButton_Click(object sender, EventArgs e)
+        {
+            // Launch the file explorer
+            int size = -1;
+
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
+            if (result == DialogResult.OK) // Test result.
+            {
+                string file = openFileDialog1.FileName;
+                //try
+                //{
+                //    string text = File.ReadAllText(file);
+                //    size = text.Length;
+                //    outputWindow.Text = text;
+                //}
+                //catch (IOException)
+                //{
+                //}
+
+                // Check the file extension to make sure it is a valid image type
+                // .jpg , .jpeg , .jpe .jif , .jfif , .jfi
+                int extension = file.LastIndexOf(".");
+                if (file.Substring(extension) == ".jpg" || file.Substring(extension) == ".jpeg" ||
+                    file.Substring(extension) == ".jpe" || file.Substring(extension) == ".jif" ||
+                    file.Substring(extension) == ".jfif" || file.Substring(extension) == ".jfi")
+                {
+                    // Valid file extension
+                    outputWindow.Text = "Starting the generator..." + Environment.NewLine;
+
+                    // Store the file path
+                    // (NEED TO) pass the image in as an arugment instead
+                    //string impath = curDir + "\\path.txt";
+                    //using (StreamWriter writer = new StreamWriter(impath))
+                    //{
+                    //    writer.WriteLine(file);
+                    //}
+
+                    // Run the generator
+                    int first = curDir.IndexOf("Image_Entropy") + "Image_Entropy".Length;
+                    string exec = curDir.Substring(0, first) + "\\x64\\Release\\Image_Entropy.exe";
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.CreateNoWindow = true;
+                    startInfo.UseShellExecute = false;
+                    startInfo.FileName = exec;
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    startInfo.Arguments = file + " -o";
+                    //startInfo.Arguments = file;
+                    try
+                    {
+                        using (Process exeProcess = Process.Start(startInfo))
+                        {
+                            exeProcess.WaitForExit();
+                        }
+                    }
+                    catch
+                    {
+                        // Log error.
+                        outputWindow.Text += "Error. Could not launch generator." + Environment.NewLine;
+                    }
+                    //string cParams = file + " -o";
+
+                    //var proc = Process.Start(exec, file);
+                    //proc.CloseMainWindow();
+                    //proc.Close();
+
+                    // Opening the output text file
+                    string outputText = curDir + "\\output.txt";
+                    using (StreamReader sr = new StreamReader(outputText))
+                    {
+                        // Read the stream to a string
+                        string s = "";
+                        while ((s = sr.ReadLine()) != null)
+                        {
+                            outputWindow.Text += s + Environment.NewLine;
+                        }
+                    }
+                }
+                else
+                {
+                    // Invalid file extension
+                    outputWindow.Text = "Not a valid image. Please try again.\n";
+                }
+            }
+            else
+            {
+                // Invalid file extension
+                outputWindow.Text = "Not a valid image. Please try again.\n";
+            }
+            
+        }
+
+        private void testGenButton_Click(object sender, EventArgs e)
+        {
+            // Inform the user the test suite is starting
+            outputWindow.Text = "Starting the test suite...This will take a few minutes to run." + Environment.NewLine;
+
+            // Run the test suite
+            int first = curDir.IndexOf("Image_Entropy") + "Image_Entropy".Length;
+            string exec = curDir.Substring(0, first) + "\\x64\\Release\\testing.exe";
+
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = false;
+            startInfo.FileName = exec;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            try
+            {
+                using (Process exeProcess = Process.Start(startInfo))
+                {
+                    exeProcess.WaitForExit();
+                }
+            }
+            catch
+            {
+                // Log error.
+                outputWindow.Text += "Error. Could not the test suite." + Environment.NewLine;
+            }
+
+            // Opening the results text file
+            string outputText = curDir + "\\results.txt";
+            using (StreamReader sr = new StreamReader(outputText))
+            {
+                // Read the stream to a string
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+                    outputWindow.Text += s + Environment.NewLine;
+                }
+            }
+        }
+
+        private void outputWindowLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void welcomeTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
