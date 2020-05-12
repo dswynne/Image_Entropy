@@ -48,9 +48,8 @@ int main(int argc, char* argv[])
     
     // Go to the directory where the test images are stored
     size_t found = curpath.find("Image_Entropy");
-    //string testImages = curpath.substr(0, found);
-    //testImages.append("Image_Entropy\\Image_Entropy\\images\\*");
-    string testImages = "D:\\Pictures\\ENEE408GImages\\wallpapers\\*";
+    string testImages = curpath.substr(0, found);
+    testImages.append("Image_Entropy\\Image_Entropy\\images\\*");
     vector<cv::String> filenames;	//Holds filenames of all images in the folder
     glob(testImages, filenames, false);
     

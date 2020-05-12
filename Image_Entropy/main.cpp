@@ -111,7 +111,6 @@ int main(int argc, char* argv[]) {
     
     // Using an extractor to generate a seed that is closer to truly random
     string extracted = xor_extractor(bitstrings);
-    //string seed = xor_extractor(bitstrings);
     
     //Using SHA-2 Hash function to generate a random hash
     string hash = sha256(extracted);
