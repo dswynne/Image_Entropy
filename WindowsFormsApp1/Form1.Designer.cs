@@ -41,6 +41,7 @@
             // 
             // genKeysButton
             // 
+            this.genKeysButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.genKeysButton.Location = new System.Drawing.Point(1609, 55);
             this.genKeysButton.Name = "genKeysButton";
             this.genKeysButton.Size = new System.Drawing.Size(748, 162);
@@ -106,7 +107,6 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(2410, 1018);
-            this.ControlBox = false;
             this.Controls.Add(this.welcomeTextBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.testGenButton);
