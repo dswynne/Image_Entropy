@@ -23,6 +23,11 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+            toolTip1.SetToolTip(genKeysButton, "Your outputs will print to the Output Window.");
+            toolTip2.SetToolTip(testGenButton,
+                "Your results will print to the Output Window. For more detailed results see blockFrequency.txt, " +
+                "\nfrequency.txt, longestRun.txt, and runs.txt which should be in the same directory this application " +
+                "\nwas run from.");
         }
 
         private void genKeysButton_Click(object sender, EventArgs e)
@@ -35,15 +40,6 @@ namespace WindowsFormsApp1
             if (result == DialogResult.OK) // Test result.
             {
                 string file = openFileDialog1.FileName;
-                //try
-                //{
-                //    string text = File.ReadAllText(file);
-                //    size = text.Length;
-                //    outputWindow.Text = text;
-                //}
-                //catch (IOException)
-                //{
-                //}
 
                 // Check the file extension to make sure it is a valid image type
                 // .jpg , .jpeg , .jpe .jif , .jfif , .jfi
@@ -54,14 +50,6 @@ namespace WindowsFormsApp1
                 {
                     // Valid file extension
                     outputWindow.Text = "Starting the generator..." + Environment.NewLine;
-
-                    // Store the file path
-                    // (NEED TO) pass the image in as an arugment instead
-                    //string impath = curDir + "\\path.txt";
-                    //using (StreamWriter writer = new StreamWriter(impath))
-                    //{
-                    //    writer.WriteLine(file);
-                    //}
 
                     // Run the generator
                     int first = curDir.IndexOf("Image_Entropy") + "Image_Entropy".Length;
@@ -86,11 +74,6 @@ namespace WindowsFormsApp1
                         // Log error.
                         outputWindow.Text += "Error. Could not launch generator." + Environment.NewLine;
                     }
-                    //string cParams = file + " -o";
-
-                    //var proc = Process.Start(exec, file);
-                    //proc.CloseMainWindow();
-                    //proc.Close();
 
                     // Opening the output text file
                     string outputText = curDir + "\\output.txt";
@@ -142,7 +125,7 @@ namespace WindowsFormsApp1
             catch
             {
                 // Log error.
-                outputWindow.Text += "Error. Could not the test suite." + Environment.NewLine;
+                outputWindow.Text += "Error. Could not run the test suite." + Environment.NewLine;
             }
 
             // Opening the results text file
@@ -171,6 +154,11 @@ namespace WindowsFormsApp1
         private void welcomeTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void toolTip1_Popup(object sender, PopupEventArgs e)
+        {
+            
         }
     }
 }

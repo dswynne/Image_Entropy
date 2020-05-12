@@ -39,15 +39,44 @@ rows = size(M,1);
 cols = size(M,2);
 reshapeFactor = floor((rows - cols)/2);
 
-for i = 1:(rows + reshapeFactor)
-    row = zeros(1,rows + reshapeFactor);
-    for j = 1:(rows + reshapeFactor)
-        row(j) = M(i,j);
+% Picking a random subsqaure
+ran = randi([1 4]);
+if ran == 1
+    rowStart = 1;
+    rowEnd = rows + reshapeFactor;
+    colStart = 1;
+    colEnd = rows + reshapeFactor;
+elseif ran == 2
+    rowStart = rows - (rows + reshapeFactor);
+    rowEnd = rows;
+    colStart = 1;
+    colEnd = rows + reshapeFactor;
+elseif ran == 3
+    rowStart = 1;
+    rowEnd = rows + reshapeFactor;
+    colStart = cols - (rows + reshapeFactor);
+    colEnd = cols;
+elseif ran == 4
+    rowStart = rows - (rows + reshapeFactor);
+    rowEnd = rows;
+    colStart = cols - (rows + reshapeFactor);
+    colEnd = cols;
+end
+
+% Performing the cropping
+m = 1;
+for i = rowStart:rowEnd
+    row = zeros(1,rowEnd - rowStart);
+    n = 1;
+    for j = colStart:colEnd
+        row(n) = M(i,j);
+        n = n + 1;
     end
-    intensity_sq(i,:) = row;
+    intensity_sq(m,:) = row;
+    m = m + 1;
 end
 % reshapeFactor = cols - rows;
-% 
+
 % % Making a rows x (reshapeFactor + rows) matrix
 % for i = 1:rows
 %     row = zeros(1,rows+reshapeFactor);

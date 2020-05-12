@@ -53,30 +53,23 @@ int main(int argc, char* argv[]) {
     ofstream outfile;
     string temp = curpath;
     
-    /*TEST CODE*/
-    temp.append("\\output.txt");
-    string outputText = temp;
-    outfile.open(outputText);
-    /*END OF TEST CODE*/
-
-    //if (string(argv[2]) == "-t") { // Being called by the test function
-    //    temp.append("\\seeds4Testing.txt");
-    //    string outputText = temp;
-    //    outfile.open(outputText, ios::app);
-    //}
-    //else if (string(argv[2]) == "-o") { // Being called by the app
-    //    temp.append("\\output.txt");
-    //    string outputText = temp;
-    //    outfile.open(outputText);
-    //}
+    if (string(argv[2]) == "-t") { // Being called by the test function
+        temp.append("\\seeds4Testing.txt");
+        string outputText = temp;
+        outfile.open(outputText, ios::app);
+    }
+    else if (string(argv[2]) == "-o") { // Being called by the app
+        temp.append("\\output.txt");
+        string outputText = temp;
+        outfile.open(outputText);
+    }
 
     // Getting image
     Mat I;
     if (argc < 2) { 
-        //outfile << "Not enough input arguments." << endl;
-        //outfile.close();
-        ////return 0;
-        I = imread("C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\Image_Entropy\\images\\2-cxDw37f.jpg");
+        outfile << "Not enough input arguments." << endl;
+        outfile.close();
+        return 0;       
     }
     else {
         I = imread(argv[1]);
@@ -118,44 +111,42 @@ int main(int argc, char* argv[]) {
     
     // Using an extractor to generate a seed that is closer to truly random
     string extracted = xor_extractor(bitstrings);
-
+    //string seed = xor_extractor(bitstrings);
+    
     //Using SHA-2 Hash function to generate a random hash
     string hash = sha256(extracted);
 
     // Converting the hash into a new bitstring that will serve as the seed
     string seed = hash2seed(hash);
     
-    /*TEST CODE*/
-    retValsRSA RSAKeys = generateRSAKey(seed);
-    retValsAES AESKey = generateAESKey(seed);
-    /*END OF TEST CODE*/
+    // Determing which format the output should be
+    if (string(argv[2]) == "-t"){ // Being called by the test function
+        // Outputting seed into a file
+        outfile << seed << endl;
+        outfile.close();
+    }
+    else if (string(argv[2]) == "-o"){ // Being called by the app
+        // Outputting seed into a file
+        outfile << "Seed:" << endl;
+        outfile << seed << endl;
 
-    //// Determing which format the output should be
-    //if (string(argv[2]) == "-t"){ // Being called by the test function
-    //    // Outputting seed into a file
-    //    outfile << seed << endl;
-    //    outfile.close();
-    //}
-    //else if (string(argv[2]) == "-o"){ // Being called by the app
-    //    // Outputting seed into a file
-    //    outfile << "Seed:" << endl;
-    //    outfile << seed << endl;
+        // Generating RSA keys
+        retValsRSA RSAKeys = generateRSAKey(seed);
+        outfile << "\n" << "RSA Keys:" << endl;
+        outfile << "\n" << RSAKeys.privateKey << endl;
+        outfile << RSAKeys.privateKey << endl;
+        
 
-    //    // Generating RSA keys
-    //    retValsRSA RSAKeys = generateRSAKey(seed);
-    //    outfile << "RSA Keys:" << endl;
-    //    outfile << "\n" << RSAKeys.privateKey << endl;
-    //    outfile << RSAKeys.privateKey << endl;
-    //    
-
-    //    // Generating AES key
-    //    retValsAES AESKey = generateAESKey(seed);
-    //    outfile << "AES Key:" << endl;
-    //    outfile << "\n" << AESKey.key<< endl;
-    //    outfile << AESKey.iv << endl;
-    //    
-    //    outfile.close();
-    //}
+        // Generating AES key
+        retValsAES AESKey = generateAESKey(seed);
+        outfile << "AES Key:" << endl;
+        outfile << "\nKey:" << endl;
+        outfile << AESKey.key<< endl;
+        outfile << "\nIV:" << endl;
+        outfile << AESKey.iv << endl;
+        
+        outfile.close();
+    }
     return 0;
        
 }

@@ -26,12 +26,12 @@ string vn_extractor(vector<string> bitstrings) {
     int k = 0, i = 0;
     string curstr, seed;
     cv::Point temp;
-    while (k < 256) {
+    while (k < 1024) {
         //index = get_random_index(numStrings);
         temp = getPQIndices(numStrings, numStrings);
         index = temp.x;
         curstr = bitstrings[index];
-        while (i < 256 && k < 256) {
+        while (i < 256 && k < 1024) {
             if (curstr[i] == curstr[i + 1]) {
                 i = i + 2;
             }
@@ -60,12 +60,12 @@ string xor_extractor(vector<string> bitstrings) {
     string curstr, seed;
     cv::Point temp;
     unsigned char a, b, c;
-    while (k < 256) {
+    while (k < 1024) {
         //index = get_random_index(numStrings);
         temp = getPQIndices(numStrings, numStrings);
         index = temp.x;
         curstr = bitstrings[index];
-        while (i < 256 && k < 256) {
+        while (i < 256 && k < 1024) {
             if (curstr[i] == curstr[i + 1]) {
                 seed += '0';
                 k++;

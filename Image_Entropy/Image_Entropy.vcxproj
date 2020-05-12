@@ -159,7 +159,6 @@
   <ItemGroup>
     <ClCompile Include="extractor.cpp" />
     <ClCompile Include="filter.cpp" />
-    <ClCompile Include="generateRSAKey.cpp" />
     <ClCompile Include="gen_bitstrings.cpp" />
     <ClCompile Include="hash2seed.cpp" />
     <ClCompile Include="main.cpp" />
@@ -178,7 +177,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="oldGenerateRSAKeyCode.txt" />
-    <Text Include="old_main_code.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

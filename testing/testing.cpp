@@ -29,61 +29,43 @@ constexpr auto MAXPATHLEN = 100;
 
 int main(int argc, char* argv[])
 {
-    //char choice[1];
-    //printf("Read in new images? 1 for yes, 0 for no: ");
-    //scanf_s("%1d", choice);
-    //if ((int)choice[0] == 1) {
-        
-        // Wipe out old file
-        ofstream myfile;
-        myfile.open("seeds4Testing.txt", ios::trunc);
-        myfile.close();
-        /* Code for reading a folder of images */
-        //Read all images in a folder
-        
-        char cwd[MAXPATHLEN];
-        _getcwd(cwd, sizeof(cwd));
-        string curpath;
-        int i = 0;
-        while (cwd[i] != '\0') {
-            curpath += cwd[i];
-            i++;
-        }
-        size_t found = curpath.find("Image_Entropy");
-        string testImages = curpath.substr(0, found);
-        testImages.append("Image_Entropy\\Image_Entropy\\images\\*");
-        vector<cv::String> filenames;	//Holds filenames of all images in the folder
-        //glob("D:\\Pictures\\ENEE408GImages\\wallpapers\\*", filenames, false);
-        glob(testImages, filenames, false);
-        string cmd;
-        string exec = curpath.substr(0, found);
-        exec.append("Image_Entropy\\x64\\Release\\Image_Entropy.exe ");
-
-        //string exec = "C:\\School\\UMD\\ENEE408G\\Final_Project\\code\\Image_Entropy\\x64\\Release\\Image_Entropy.exe ";
-        for (i = 0; i < filenames.size(); i++) {
-            cmd = exec + filenames[i] + " -t";
-            system(cmd.c_str());
-            //cout << i << endl;
-        }
-
-        /*//Vector that holds all of the images in the folder
-        vector<Mat> images;
-        size_t count = filenames.size(); //number of image files in the folder
-
-        // Create array of filenames
-        for (size_t i = 0; i < count; i++) {
-            images.push_back(imread(filenames[i]));
-        }
-
-        Mat imageToTest;
-        // Run through all the images
-        for (size_t i = 0; i < count; i++) {
-            imageToTest = images[i];
-        }*/
-//}
+       
+    // Wipe out old file
+    ofstream myfile;
+    myfile.open("seeds4Testing.txt", ios::trunc);
+    myfile.close();
     
+    /* Read all images in a folder */   
+    // Get cwd
+    char cwd[MAXPATHLEN];
+    _getcwd(cwd, sizeof(cwd));
+    string curpath;
+    int i = 0;
+    while (cwd[i] != '\0') {
+        curpath += cwd[i];
+        i++;
+    }
+    
+    // Go to the directory where the test images are stored
+    size_t found = curpath.find("Image_Entropy");
+    //string testImages = curpath.substr(0, found);
+    //testImages.append("Image_Entropy\\Image_Entropy\\images\\*");
+    string testImages = "D:\\Pictures\\ENEE408GImages\\wallpapers\\*";
+    vector<cv::String> filenames;	//Holds filenames of all images in the folder
+    glob(testImages, filenames, false);
+    
+    // Run the algorithm for all the images in the test set
+    string cmd;
+    string exec = curpath.substr(0, found);
+    exec.append("Image_Entropy\\x64\\Release\\Image_Entropy.exe ");
 
-     
+    for (i = 0; i < filenames.size(); i++) {
+        cmd = exec + filenames[i] + " -t";
+        system(cmd.c_str());
+        //cout << i << endl;
+    }
+
+    
     //Run testing code
     string epsilon = readBinaryDigitsInASCIIFormat();
     Frequency(epsilon);

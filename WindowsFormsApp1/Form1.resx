@@ -127,4 +127,10 @@ This app lets you test the algorithm we developed on your own images.
 2. Click the "Test Generator" button to run a few statistical tests on a set of images. To run a full suite
     of tests you will have to reference the documentation on how to run the NIST Statistical Test Suite.</value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="toolTip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>211, 17</value>
+  </metadata>
 </root>

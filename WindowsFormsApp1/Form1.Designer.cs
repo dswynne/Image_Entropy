@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.genKeysButton = new System.Windows.Forms.Button();
             this.outputWindow = new System.Windows.Forms.TextBox();
             this.testGenButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.welcomeTextBox = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // genKeysButton
@@ -82,7 +85,7 @@
             // 
             this.welcomeTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.welcomeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.welcomeTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.900001F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.welcomeTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.welcomeTextBox.Location = new System.Drawing.Point(88, 55);
             this.welcomeTextBox.Multiline = true;
             this.welcomeTextBox.Name = "welcomeTextBox";
@@ -91,6 +94,10 @@
             this.welcomeTextBox.TabIndex = 4;
             this.welcomeTextBox.Text = resources.GetString("welcomeTextBox.Text");
             this.welcomeTextBox.TextChanged += new System.EventHandler(this.welcomeTextBox_TextChanged);
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip1_Popup);
             // 
             // Form1
             // 
@@ -119,6 +126,8 @@
         private System.Windows.Forms.Button testGenButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox welcomeTextBox;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolTip toolTip2;
     }
 }
 

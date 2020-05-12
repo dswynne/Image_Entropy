@@ -11,8 +11,14 @@
 #include <math.h>
 #include <algorithm>
 #include <iterator>
+/* External Libraries: */
+// OpenCV
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 /* Developer Created Libraries*/
 #include "mat_divisions.h"
+#include "tools.h"
 
 using namespace std;
 
@@ -24,22 +30,50 @@ vector<vector<int>> make_square_crop(vector<vector<int>> intensity_mat) {
     vector<vector<int>> intensity_sq;
     if (rows == cols) { // already a square
         intensity_sq = intensity_mat;
-        //for (i = 0; i < rows; i++) {
-        //    vector<int> row(rows);
-        //    for (j = 0; j < cols; j++) {
-        //        row[j] = intensity_mat[i][j];
-        //    }
-        //    intensity_sq.push_back(row);
-        //}
         return intensity_sq;
     }
     else if (rows > cols) { // portrait photo 
         reshapeFactor = floor((cols - rows)/2);
+        
+        // Picking a subsquare to crop to 
+        cv::Point pnt = getPQIndices(4, 4);
+        int ran = pnt.x + 1;
+        int rowStart, rowEnd, colStart, colEnd;
 
-        for (i = 0; i < cols + reshapeFactor; i++) {
-            vector<int> row(cols+reshapeFactor);
-            for (j = 0; j < cols + reshapeFactor; j++) {
-                row[j] = intensity_mat[i][j];
+        ran == 1;
+        if (ran == 1) { // top left
+            rowStart = 0;
+            rowEnd = cols + reshapeFactor;
+            colStart = 0;
+            colEnd = cols + reshapeFactor;
+        }
+        else if (ran == 2) { // bot left
+            rowStart = rows - (cols + reshapeFactor);
+            rowEnd = rows;
+            colStart = 0;
+            colEnd = cols + reshapeFactor;
+        }
+        else if (ran == 3) { // top right
+            rowStart = 0;
+            rowEnd = rows + reshapeFactor;
+            colStart = cols - (cols + reshapeFactor);
+            colEnd = cols;
+        }
+        else if (ran == 4) {
+            rowStart = rows - (cols + reshapeFactor);
+            rowEnd = rows;
+            colStart = cols - (cols + reshapeFactor);
+            colEnd = cols;
+        }
+        
+        // Performing the cropping itself
+        int m;
+        for (i = rowStart; i < rowEnd; i++) {
+            vector<int> row(rowEnd - rowStart);
+            m = 0;
+            for (j = colStart; j < colEnd; j++) {
+                row[m] = intensity_mat[i][j];
+                m++;
             }
             intensity_sq.push_back(row);
         }
@@ -47,11 +81,46 @@ vector<vector<int>> make_square_crop(vector<vector<int>> intensity_mat) {
     }
     else if (rows < cols) { // landscape photo
         reshapeFactor = floor((rows - cols)/2);
+        
+        // Picking a subsquare to crop to 
+        cv::Point pnt = getPQIndices(4, 4);
+        int ran = pnt.x + 1;
+        int rowStart, rowEnd, colStart, colEnd;
+        
+        ran == 1;
+        if (ran == 1) { // top left
+            rowStart = 0;
+            rowEnd = rows + reshapeFactor;
+            colStart = 0;
+            colEnd = rows + reshapeFactor;
+        }
+        else if (ran == 2) { // bot left
+            rowStart = rows - (rows + reshapeFactor);
+            rowEnd = rows;
+            colStart = 0;
+            colEnd = rows + reshapeFactor;
+        }
+        else if (ran == 3) { // top right
+            rowStart = 0;
+            rowEnd = rows + reshapeFactor;
+            colStart = cols - (rows + reshapeFactor);
+            colEnd = cols;
+        }
+        else if (ran == 4) {
+            rowStart = rows - (rows + reshapeFactor);
+            rowEnd = rows;
+            colStart = cols - (rows + reshapeFactor);
+            colEnd = cols;
+        }
 
+        // Performing the cropping itself
+        int m;
         for (i = 0; i < rows + reshapeFactor; i++) {
             vector<int> row(rows + reshapeFactor);
+            m = 0;
             for (j = 0; j < rows + reshapeFactor; j++) {
-                row[j] = intensity_mat[i][j];
+                row[m] = intensity_mat[i][j];
+                m++;
             }
             intensity_sq.push_back(row);
         }
