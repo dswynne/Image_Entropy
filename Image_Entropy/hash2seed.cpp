@@ -18,7 +18,6 @@ string hash2seed(string hash) {
 	int i;
 	string bits, seed;
 	for (i = 0; i < hash.size(); i++) {
-		//bits  = bitset<4>(hash[i]).to_string();
         switch (hash[i]) {
             case '0': 
                 bits = "0000";
