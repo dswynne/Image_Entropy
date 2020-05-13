@@ -1,3 +1,9 @@
+/*
+	Contains basic tools such as random index generation. 
+
+	Also contains image processing code such as adjustImage() and detectBadImage();
+*/
+
 #pragma once
 #ifndef Tools
 #define Tools
@@ -169,11 +175,8 @@ inline int checkRGBImageColors(cv::Mat input, int upperThresh, int lowerThresh) 
 		return 0;
 	}
 
-	//Second, Check pairs of channels that are high while third channel is low
-
-	//Not sure if this necessary, I don't know what the RGB values of normal images are
-
-	//Third, check for all white image
+	
+	//Second, check for all white image
 	if (upperFlag[0] && upperFlag[1] && upperFlag[2])
 		return 0;
 
@@ -208,8 +211,6 @@ inline ImageValidity detectBadImage(cv::Mat input)
 	cv::Point2f values = autoAdjustImage(input);
 	alpha = (double)values.x;
 	beta = (double)values.y;
-
-	//cout << "Alpha: " << alpha << " Beta: " << beta << "\n";
 
 	// Apply alpha and beta to get new image
 	for (int i = 0; i < input.rows; i++) {

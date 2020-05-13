@@ -33,6 +33,7 @@ struct retValsAES {
 retValsRSA convertRSAtoString(RSA* keypair) {
 
     retValsRSA r;
+
     // To get the C-string PEM form:
     BIO* pri = BIO_new(BIO_s_mem());
     BIO* pub = BIO_new(BIO_s_mem());
@@ -82,12 +83,12 @@ void print_keypair(RSA* keypair) {
     pri_key[pri_len] = '\0';
     pub_key[pub_len] = '\0';
 
-    printf("\n%s\n\n%s\n", pri_key, pub_key);
-
     BIO_free_all(pub);
     BIO_free_all(pri);
     free(pri_key);
     free(pub_key);
+
+    return;
 }
 
 
@@ -127,8 +128,6 @@ retValsRSA generateRSAKey(std::string seedString) {
         std::cout << "Error creating RSA Key pair\n";
 
     }
-
-    print_keypair(rsa.get());
 
     retValsRSA r = convertRSAtoString(rsa.get());
 
@@ -170,21 +169,15 @@ retValsAES generateAESKey(std::string seedString) {
     //write char keys and iv to string in hex format
     ostringstream keyString;
     ostringstream ivString;
-    //cout << "AES Key: ";
 
     for (int i = 0; i < 16; i++) {
-        //cout << hex << (int)key[i] << " ";
         keyString << hex << (int)key[i];
 
     }
 
-    //cout << "\n";
-    //cout << "AES Initialization Vector: ";
     for (int i = 0; i < 16; i++) {
-        //cout << hex << (int)iv[i] << " ";
         ivString << hex << (int)iv[i];
     }
-    //cout << "\n";
 
     a.key = keyString.str();
     a.iv = ivString.str();
