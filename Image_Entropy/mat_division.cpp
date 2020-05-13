@@ -142,13 +142,6 @@ vector<vector<int>> make_square_reshape(vector<vector<int>> intensity_mat) {
     
     if (rows == cols) { // already a square
         intensity_sq = intensity_mat;
-        //for (i = 0; i < rows; i++) {
-        //    vector<int> row(rows);
-        //    for (j = 0; j < cols; j++) {
-        //        row[j] = intensity_mat[i][j];
-        //    }
-        //    intensity_sq.push_back(row);
-        //}
         return intensity_sq;
     }
     else {

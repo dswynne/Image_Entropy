@@ -32,11 +32,6 @@ using namespace std;
 
 constexpr auto MAXPATHLEN = 100;
 
-/* TODO: 
-    - Make arguments where this prints out seed: + seed, etc. & just the seeds for the generator
-    - Ensure file paths can be read as arguments
-    - Get the RSA/AES keys into the text file as well
-*/
 int main(int argc, char* argv[]) {
     
     // Get current working directory

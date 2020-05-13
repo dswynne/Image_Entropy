@@ -34,7 +34,7 @@ vector<string> gen_bitstrings_whole_pixel(vector<int> allpix) {
             temp.append(btstr.begin() + 4, btstr.begin() + 6);  // 2^3 & 2^2
             temp.append(btstr.begin() + 2, btstr.begin() + 4);  // 2^5 & 2^4
             temp.append(btstr.begin() + 6, btstr.end());        // 2^1 & 2^0
-            //bitstrings[n].insert(end(bitstrings[n]), begin(btstr), end(btstr));
+
             bitstrings[n].insert(end(bitstrings[n]), begin(temp), end(temp));
             temp = "";
         }
