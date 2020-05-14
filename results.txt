@@ -1,0 +1,14 @@
+BITSREAD = 260864 0s = 130285 1s = 130579
+FREQUENCY TEST:
+SUCCESS		p_value = 0.564868
+
+LONGEST RUNS OF ONES TEST
+SUCCESS		p_value = 0.182080
+
+RUNS TEST
+SUCCESS		p_value = 0.024889
+
+BLOCK FREQUENCY TEST
+SUCCESS		p_value = 0.045325
+
+For more detailed results see the text files corresponding to each test.
