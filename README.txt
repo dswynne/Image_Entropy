@@ -33,6 +33,7 @@ Using version 4.2.0, follow tutorial below
 https://medium.com/@subwaymatch/adding-opencv-4-2-0-to-visual-studio-2019-project-in-windows-using-pre-built-binaries-93a851ed6141
 
 openSSL:
+https://www.npcglib.org/~stathis/blog/precompiled-openssl/
 
 
 
