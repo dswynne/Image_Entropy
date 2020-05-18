@@ -24,6 +24,8 @@ If you would like to look through the code itself here is a break down of the di
 \testing: The project that contains a partial implementation of the NIST Statistical Test Suite for testing the randomness of the generator
 \WindowsFormsApp1: The project that contains Aaprototype app meant to display the functionality of the algorithm
 
+\Image_Entropy\images: The ~1000 images used to test the generator
+
 The rest of the files in this directory are deliverables for the project.
 
 To run the Image_Entropy project by itself you will need to have both OpeSSL and OpenCV installed
